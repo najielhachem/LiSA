@@ -6,3 +6,7 @@ cd python-twitter
 make env
 or
 pip install -Ur requirements.txt
+
+=======
+
+pip install twitterscraper
