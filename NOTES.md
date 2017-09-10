@@ -17,3 +17,8 @@ http://cs.stanford.edu/people/alecmgo/papers/TwitterDistantSupervision09.pdf
 -https://github.com/alabid/sentimentstwitter
 
 -https://github.com/yogeshg/Twitter-Sentiment
+## Datasets Links
+### Twitter Sentiment Analysis Dataset (Stanford)
+-http://thinknook.com/wp-content/uploads/2012/09/Sentiment-Analysis-Dataset.zip
+### Twitter Sentiment Corpus by Niek Sanders
+-http://www.sananalytics.com/lab/twitter-sentiment/
