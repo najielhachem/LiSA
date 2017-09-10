@@ -13,5 +13,5 @@ and get some kind of result.
 # Useful links
 ## Stanford paper on sentiment analysis on twitter
 http://cs.stanford.edu/people/alecmgo/papers/TwitterDistantSupervision09.pdf
-## a git link who have implemented the paper
+## A git link who have implemented the paper
 https://github.com/alabid/sentimentstwitter
