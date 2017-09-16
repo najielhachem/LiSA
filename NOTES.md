@@ -22,3 +22,6 @@ http://cs.stanford.edu/people/alecmgo/papers/TwitterDistantSupervision09.pdf
 -http://thinknook.com/wp-content/uploads/2012/09/Sentiment-Analysis-Dataset.zip
 ### Twitter Sentiment Corpus by Niek Sanders
 -http://www.sananalytics.com/lab/twitter-sentiment/
+### Michigan Competition
+http://inclass.kaggle.com/c/si650winter11/data
+
