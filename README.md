@@ -14,7 +14,8 @@ pip install twitterscraper
 
 ## State of The Art
 ### Monkey Learn 
-https://monkeylearn.com
+Website is okay, API doesn't work. can't import module
+link: https://monkeylearn.com
 
 ### Stanford paper on sentiment analysis on twitter
 http://cs.stanford.edu/people/alecmgo/papers/TwitterDistantSupervision09.pdf
