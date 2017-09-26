@@ -19,6 +19,7 @@ link: https://monkeylearn.com
 
 ### Stanford paper on sentiment analysis on twitter
 http://cs.stanford.edu/people/alecmgo/papers/TwitterDistantSupervision09.pdf
+https://www.ijcai.org/Proceedings/15/Papers/177.pdf
 ## implementation of the paper
 * https://github.com/alabid/sentimentstwitter
 * https://github.com/yogeshg/Twitter-Sentiment

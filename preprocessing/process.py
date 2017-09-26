@@ -2,14 +2,17 @@ import numpy as np
 import csv
 import re
 from textblob import TextBlob
-
+from nltk.stem.wordnet import WordNetLemmatizer
+from nltk.stem.lancaster import LancasterStemmer
 def getData(path):
   f = open(path, "r")
   l = list(csv.reader(f))
   n = len(l)
   for i in range(n):
-    l[i] = np.array([l[i][1],l[i][3]])
+    l[i] = np.array([l[i][1],process(l[i][3])])
   l = np.array(l)
+  cond = l[:,1] != "__DELETE"
+  l = l[cond] 
   return l
 
 # Hashtags
@@ -45,16 +48,17 @@ def hash_repl(match):
 	return '__HASH_'+match.group(1).upper()
 
 # URLs
-url_regex = re.compile(r"(http|https|ftp)://[a-zA-Z0-9\./]+")
+url_regex = re.compile(r"(http|https|ftp)://[a-zA-Z0-9\./]+|www.[a-zA-Z0-9\./]+")
 
 # Determinants
-det_regex = re.compile(r"the|of|and|my|yours|your|his|its|our|their|these|this|those|what|which|whose|her")
+det_regex = re.compile(r"the|of|and|my|yours|to|your|his|its|our|their|these|this|those|what|which|whose|her")
 # Retweets
-rt_regex = re.compile(r"RT")
+rt_regex = re.compile(r".*\sRT\b")
 
 def processDeterminants(text):
   return re.sub( det_regex, "", text)
-
+def processHashtags(text):
+  return re.sub(hash_regex, hash_repl, text)
 def processUrls(text):
   return re.sub( url_regex, "__URL", text)
 
@@ -74,6 +78,13 @@ def processRetweets(text):
     return "__DELETE"
   else: 
     return text
+def processSteamLeam(text):
+   stem = LancasterStemmer()
+   lem = WordNetLemmatizer()
+   l = re.split(",| ",text)
+   l = np.array([stem.stem(lem.lemmatize(l[i])) for i in range(len(l))])
+   text = " ".join(l)
+   return text
 def processTextBlob(text):
    text = TextBlob(text)
    if (text.detect_language() != 'en'):
@@ -85,16 +96,17 @@ def processTextBlob(text):
 
 def process(text, remove_emoticon = True):
   text = processRepeatLetters(text)
-  print("Repeated ",text)
+  #print("Repeated ",text)
   text = processUrls(text)
-  print("Urls",text)
+  #print("Urls",text)
   text = processEmoticons(text, remove_emoticon)
-  print("Emoticons",text)
+  #print("Emoticons",text)
   text = processDeterminants(text)
-  print("Determinants",text)
+  #print("Determinants",text)
   text = processRetweets(text)
-  print("Retweets",text)
-  text = processTextBlob(text)
-  print("TextBlob",text)
+  #print("Retweets",text)
+  #text = processTextBlob(text)
+  #print("TextBlob",text)
+  text = processSteamLeam(text)
   return text
 
