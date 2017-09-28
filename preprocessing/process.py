@@ -15,6 +15,32 @@ def getData(path):
   l = l[cond] 
   return l
 
+
+
+def get_language_likelihood(input_text):
+    """Return a dictionary of languages and their likelihood of being the 
+    natural language of the input text
+    """
+ 
+    input_text = input_text.lower()
+    input_words = wordpunct_tokenize(input_text)
+ 
+    language_likelihood = {}
+    total_matches = 0
+    for language in stopwords._fileids:
+        language_likelihood[language] = len(set(input_words) &
+                set(stopwords.words(language)))
+ 
+    return language_likelihood
+ 
+def get_language(input_text):
+    """Return the most likely language of the given text
+    """
+ 
+    likelihoods = get_language_likelihood(input_text)
+    return sorted(likelihoods, key=likelihoods.get, reverse=True)[0]
+ 
+
 # Hashtags
 hash_regex = re.compile(r"#(\w+)")
 def hash_repl(match):
@@ -93,8 +119,13 @@ def processTextBlob(text):
    lstr = text.words.singularize()
    lstr = lstr.lemmatize()
    return " ".join(lstr)
-
+def processLanguage(text):
+    if(get_language(text) != 'english'):
+      return "__DELETE"
+    return text
 def process(text, remove_emoticon = True):
+  #text = processLanguage(text)
+
   text = processRepeatLetters(text)
   #print("Repeated ",text)
   text = processUrls(text)
@@ -107,6 +138,7 @@ def process(text, remove_emoticon = True):
   #print("Retweets",text)
   #text = processTextBlob(text)
   #print("TextBlob",text)
-  text = processSteamLeam(text)
+  #text = processSteamLeam(text)
+  
   return text
 
