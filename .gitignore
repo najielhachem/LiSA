@@ -1,0 +1,9 @@
+# MAC
+*.DS_STORE
+
+# jupyter
+__pycache__/
+.ipynb_*
+
+# Vim
+*.swp
