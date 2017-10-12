@@ -17,7 +17,16 @@ def getDictionnary(lines, n):
   idx = np.argsort(arr_dic[:,1])
   arr_dic = arr_dic[idx]
   arr_dic = arr_dic[::-1]
-  return arr_dic[:n]
+  arr_dic = arr_dic[:n]
+  dic= {arr_dic[i][0]:i for i in range(len(arr_dic)) }
+  return dic
+
+def vectorizeText(dic,text):
+   vec = np.zeros(len(dic))
+   for word in text.split():
+     if (word in dic):
+       vec[dic[word]] = 1
+   return vec
     
    
       
