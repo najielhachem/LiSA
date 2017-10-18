@@ -4,6 +4,7 @@
 # jupyter
 __pycache__/
 .ipynb_*
+Certificates.p12
 
 # Vim
 *.swp

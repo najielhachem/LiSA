@@ -4,6 +4,7 @@ import re
 from textblob import TextBlob
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.stem.lancaster import LancasterStemmer
+
 def getData(path):
   f = open(path, "r")
   l = list(csv.reader(f))
@@ -14,7 +15,6 @@ def getData(path):
   cond = l[:,1] != "__DELETE"
   l = l[cond] 
   return l
-
 
 
 def get_language_likelihood(input_text):
