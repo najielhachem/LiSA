@@ -8,3 +8,6 @@ Certificates.p12
 
 # Vim
 *.swp
+
+# images
+benchmarks/*
