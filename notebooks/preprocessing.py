@@ -1,105 +1,87 @@
 import numpy as np
-import csv
 import re
 from textblob import TextBlob
+
+import nltk 
+nltk.download('wordnet')
+
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.stem.lancaster import LancasterStemmer
 
-def getData(path):
-    f = open(path, "r")
-    l = list(csv.reader(f))
-    n = len(l)
-    for i in range(n):
-        l[i] = np.array([l[i][1],process(l[i][3])])
-    l = np.array(l)
-    cond = l[:, 1] != "__DELETE"
-    l = l[cond] 
-    return l
 
+# Determinants
+det_regex = re.compile(r"the|of|and|my|yours|to|your|his|its|our|their|\
+        these|this|those|what|which|whose|her")
 
-def get_language_likelihood(input_text):
-    """Return a dictionary of languages and their likelihood of being the 
-    natural language of the input text
-    """
- 
-    input_text = input_text.lower()
-    input_words = wordpunct_tokenize(input_text)
- 
-    language_likelihood = {}
-    total_matches = 0
-    for language in stopwords._fileids:
-        language_likelihood[language] = len(set(input_words) &
-                set(stopwords.words(language)))
- 
-    return language_likelihood
- 
-def get_language(input_text):
-    """Return the most likely language of the given text
-    """
-    likelihoods = get_language_likelihood(input_text)
-    return sorted(likelihoods, key=likelihoods.get, reverse=True)[0]
- 
 # Hashtags
 hash_regex = re.compile(r"#(\w+)")
 
-def hash_repl(match):
-    return '__HASH_' + match.group(1).upper()
+# URLs
+url_regex = re.compile(r"(http|https|ftp)://[a-zA-Z0-9\./]+|www.[a-zA-Z0-9\./]+")
 
 # Repeating words like hurrrryyyyyy
 rpt_regex = re.compile(r"(.)\1{1,}", re.IGNORECASE);
 
-def rpt_repl(match):
-    return match.group(1) + match.group(1)
-
-# Emoticons
-emoticons = [ \
-        ('__EMOT_SMILEY', [':-)', ':)', '(:', '(-:']), \
-        ('__EMOT_LAUGH', [':-D', ':D', 'X-D', 'XD', 'xD']), \
-        ('__EMOT_LOVE',	['<3', ':\*']), \
-        ('__EMOT_WINK',	[';-)', ';)', ';-D', ';D', '(;', '(-;']), \
-        ('__EMOT_FROWN', [':-(', ':(', '(:', '(-:']), \
-        ('__EMOT_CRY', [':,(', ':\'(', ':"(', ':((']), \
-        ]
-
+# Retweets
+rt_regex = re.compile(r".*\sRT\b")
+    
 def escape_paren(arr):
-    return [text.replace(')', '[)}\]]').replace('(', '[({\[]') for text in arr]
+    return [ text.replace(')', '[)}\]]').replace('(', '[({\[]')
+            for text in arr ]
 
 def regex_union(arr):
     return '(' + '|'.join( arr ) + ')'
+    
+emoticons = [ \
+        ('__EMOT_SMILEY', [':-)', ':)', '(:', '(-:']), \
+        ('__EMOT_LAUGH', [':-D', ':D', 'X-D', 'XD', 'xD']), \
+        ('__EMOT_LOVE', ['<3', ':\*']), \
+        ('__EMOT_WINK', [';-)', ';)', ';-D', ';D', '(;', '(-;']), \
+        ('__EMOT_FROWN', [':-(', ':(', '(:', '(-:']), \
+        ('__EMOT_CRY', [':,(', ':\'(', ':"(', ':((']), \
+        ]
 
 emoticons_regex = [ \
         (repl, re.compile(regex_union(escape_paren(regx)))) \
         for (repl, regx) in emoticons \
         ]
 
+def get_language_likelihood(input_text):
+    """Return a dictionary of languages and their likelihood of being the 
+    natural language of the input text
+    """
+    input_text = input_text.lower()
+    input_words = wordpunct_tokenize(input_text)
 
-# Hashtags
-hash_regex = re.compile(r"#(\w+)")
+    language_likelihood = {}
+    total_matches = 0
+    for language in stopwords._fileids:
+        language_likelihood[language] = len(set(input_words) &
+                set(stopwords.words(language)))
 
-def hash_repl(match):
-    return '__HASH_' + match.group(1).upper()
+    return language_likelihood
 
-
-
-# Determinants
-det_regex = re.compile(r"the|of|and|my|yours|to|your|his|its|our|their|these|this|those|what|which|whose|her")
-
-# Retweets
-rt_regex = re.compile(r".*\sRT\b")
+def get_language(input_text):
+    """Return the most likely language of the given text
+    """
+    likelihoods = get_language_likelihood(input_text)
+    return sorted(likelihoods, key=likelihoods.get, reverse=True)[0]
 
 def process_determinants(text):
     return re.sub(det_regex, "", text)
 
 def process_hashtags(text):
-    return re.sub(hash_regex, hash_repl, text)
+    def __hash_repl(match):
+        return '__HASH_' + match.group(1).upper()
+    return re.sub(hash_regex, __hash_repl, text)
 
 def process_urls(text):
-    # URLs
-    url_regex = re.compile(r"(http|https|ftp)://[a-zA-Z0-9\./]+|www.[a-zA-Z0-9\./]+")
     return re.sub(url_regex, "__URL", text)
 
 def process_repeated_letters(text):
-    return re.sub(rpt_regex, rpt_repl, text)
+    def __rpt_repl(match):
+        return match.group(1) + match.group(1)
+    return re.sub(rpt_regex, __rpt_repl, text)
 
 def process_emoticons(text, remove_emoticon):
     for (repl, regx) in emoticons_regex:
@@ -115,7 +97,7 @@ def process_retweets(text):
         return "__DELETE"
     else: 
         return text
-    
+
 def process_lematize(text):
     lem = WordNetLemmatizer()
     words = text.split(" ")
@@ -147,17 +129,16 @@ def process_ponctuation(text):
     ponctuation = "\n\t!?<>:,;.()[]{}\\/_&\"'-=+*"
     for p in ponctuation:
         text = text.replace(p, ' ')
-    text = text.split(' ')
-    text = list(filter(lambda a: a != '', doc))
-    return np.array(text)
+    return text
 
 def process(text, remove_emoticon = False):
-    text = process_ponctuation(text)
     text = process_repeated_letters(text)
     text = process_urls(text)
     text = process_emoticons(text, remove_emoticon)
     text = process_determinants(text)
     text = process_retweets(text)
     text = process_lematize(text)
+    text = process_ponctuation(text)
     return text
+
 
