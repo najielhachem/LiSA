@@ -3,6 +3,12 @@ import sklearn.svm as skl_svm
 
 class LinearSVC(Classifier):
     def __init__(self, random_state):
+        """ LinearSVC classifier imported from  sklearn
+        Args:
+            random_state (float): The seed of the pseudo random number generator
+                to use when shuffling the data (see sklearn documentation)
+        """
+
         self.name = "SVM"
         self.classifier = skl_svm.LinearSVC(random_state=random_state)
 
