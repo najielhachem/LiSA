@@ -50,6 +50,7 @@ def fetch_tweets(subject, since, until, near = None, limit = None):
     return query_tweets(query, limit)
         
 def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = None):
+    #TODO save tweets as object (encode datetime)
     """
     Fetch tweets matching description and save them into file
 
