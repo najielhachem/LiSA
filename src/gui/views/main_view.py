@@ -6,7 +6,7 @@ from ..controllers.main_view_controller import MainViewController
 class MainView(View):
 
     def __init__(self, parent):
-        super(MainView, self).__init__(parent)
+        super().__init__(parent)
         self.parent = parent
         self.parent.title("Projet Lisa")
         self.controller = self.init_controller()
