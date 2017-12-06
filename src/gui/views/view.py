@@ -7,7 +7,7 @@ class View(ABC, tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
-    
+
     @abstractmethod
-    def set_controller(self):
+    def init_controller(self):
         pass

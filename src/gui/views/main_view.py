@@ -1,23 +1,21 @@
-import calendar
-import datetime
-from tkcalendar import Calendar
-import DatePicker as dp
+import tkinter as tk
 
-from "view" import View
-from "../controllers/main_view_controller" import MainViewController
+from .view import View
+from ..controllers.main_view_controller import MainViewController
 
 class MainView(View):
 
-    def __init__(self):
+    def __init__(self, parent, *args, **kwargs):
         self.controller = self.init_controller()
         self.add_input_frame()
+        super(MainView, self).__init__(parent, *args, **kwargs)
 
 
     def init_controller(self):
         return MainViewController(self)
 
     def add_input_frame(self):
-        input_frame = tk.frame(self)
+        input_frame = tk.Frame(self)
         btn_fetch = tk.Button(input_frame, text="fetch", command=self.controller.fetch)
         pass
 
