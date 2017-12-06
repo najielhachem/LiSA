@@ -10,6 +10,9 @@ from "../controllers/main_view_controller" import MainViewController
 
 class MainView(View):
 
+    def __init__(self):
+        pass
+
     def set_controller(self):
         self.controller = MainViewController(self)
 
