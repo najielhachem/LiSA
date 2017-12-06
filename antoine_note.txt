@@ -1,2 +1,0 @@
-http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0026752
-http://mccormickml.com/2016/04/27/word2vec-resources/
