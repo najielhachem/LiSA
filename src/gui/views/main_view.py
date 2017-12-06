@@ -6,11 +6,47 @@ from ..controllers.main_view_controller import MainViewController
 class MainView(View):
 
     def __init__(self, parent):
+        # set parent
         super().__init__(parent)
         self.parent = parent
-        self.parent.title("Projet Lisa")
+        # set controller
         self.controller = self.init_controller()
+        # init window and frames
+        self.init_window()
         self.add_input_frame()
+
+    def init_window(self):
+        # changing the title of our master widget
+        self.parent.title("Projet Lisa")
+
+        # allowing the widget to take the full space of the root window
+        self.pack(fill=tk.BOTH, expand=1)
+
+        # creating a menu instance
+        menu = tk.Menu(self.parent)
+        self.parent.config(menu=menu)
+
+        # create the file object
+        file = tk.Menu(menu)
+        # add a command to file menu option
+        file.add_command(label="Save")
+        # add "file" to our menu
+        menu.add_cascade(label="File", menu=file)
+
+        # create the edit object
+        edit = tk.Menu(menu)
+        # add a command to edit menu object
+        # edit.add_command(label="Copy", command=self.showImg)
+        # add "edit" to our menu
+        menu.add_cascade(label="Edit", menu=edit)
+
+        # create help object
+        more = tk.Menu(menu)
+        # add commands to help menu object
+        more.add_command(label="Help")
+        more.add_command(label="About")
+        # add "more" to our Menu
+        menu.add_cascade(label="More", menu=more)
 
 
     def init_controller(self):
