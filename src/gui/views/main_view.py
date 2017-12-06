@@ -5,6 +5,15 @@ import datetime
 from tkcalendar import Calendar
 import DatePicker as dp
 
+from "view" import View
+from "../controllers/main_view_controller" import MainViewController
+
+class MainView(View):
+
+    def set_controller(self):
+        self.controller = MainViewController(self)
+
+
 root = Tk()
 root.title('Lisa')
 root['bg']='white'
