@@ -11,3 +11,6 @@ Certificates.p12
 
 # images
 benchmarks/*
+
+# Data
+data/*

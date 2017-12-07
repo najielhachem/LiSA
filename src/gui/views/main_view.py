@@ -14,6 +14,7 @@ class MainView(View):
         # init window and frames
         self.init_window()
         self.add_input_frame()
+        self.add_fetch_frame()
 
     def init_window(self):
         # changing the title of our master widget
@@ -58,7 +59,7 @@ class MainView(View):
         pass
 
     def add_fetch_frame(self):
-        fetch_frame = tk.frame(self)
+        fetch_frame = tk.Frame(self)
         pass
 
     def add_plot_frame(self):
