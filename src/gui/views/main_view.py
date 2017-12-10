@@ -1,7 +1,9 @@
 import tkinter as tk
 
+
 from .view import View
 from ..controllers.main_view_controller import MainViewController
+
 
 class MainView(View):
 
@@ -53,10 +55,32 @@ class MainView(View):
     def init_controller(self):
         return MainViewController(self)
 
+
     def add_input_frame(self):
-        input_frame = tk.Frame(self)
-        # btn_fetch = tk.Button(input_frame, text="fetch", command=self.controller.fetch)
-        pass
+        self.input_frame = tk.Frame(self)
+
+        tk.Label(self.input_frame, text="Input").grid(row=0)
+
+        tk.Label(self.input_frame, text="Subject").grid(row=1)
+        tk.Label(self.input_frame, text="Location").grid(row=2)
+        self.subject = tk.Entry(self.input_frame)
+        self.subject.grid(row=1, column=1)
+        self.location = tk.Entry(self.input_frame)
+        self.location.grid(row=2, column=1)
+
+        tk.Label(self.input_frame, text="From").grid(row=1, column=2)
+        tk.Label(self.input_frame, text="To").grid(row=2, column=2)
+
+        self.date_start = tk.StringVar(value="2017-12-10")
+        self.date_end = tk.StringVar(value="2017-12-10")
+        tk.Button(self.input_frame, textvariable=self.date_start, command=lambda:self.controller.calendar_click(self.date_start)).grid(row=1, column=3)
+        tk.Button(self.input_frame, textvariable=self.date_end, command=lambda:self.controller.calendar_click(self.date_end)).grid(row=2, column=3)
+
+        tk.Button(self.input_frame, text="Fetch", command=self.controller.fetch).grid(row=3)
+
+        self.input_frame.pack(fill="both", expand=True)
+        self.input_frame.mainloop()
+
 
     def add_fetch_frame(self):
         fetch_frame = tk.Frame(self)
