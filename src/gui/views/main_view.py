@@ -16,7 +16,6 @@ class MainView(View):
         # init window and frames
         self.init_window()
         self.add_input_frame()
-        self.add_fetch_frame()
 
     def init_window(self):
         # changing the title of our master widget
@@ -71,7 +70,7 @@ class MainView(View):
         tk.Label(self.input_frame, text="From").grid(row=1, column=2)
         tk.Label(self.input_frame, text="To").grid(row=2, column=2)
 
-        self.date_start = tk.StringVar(value="2017-12-10")
+        self.date_start = tk.StringVar(value="2017-12-09")
         self.date_end = tk.StringVar(value="2017-12-10")
         tk.Button(self.input_frame, textvariable=self.date_start, command=lambda:self.controller.calendar_click(self.date_start)).grid(row=1, column=3)
         tk.Button(self.input_frame, textvariable=self.date_end, command=lambda:self.controller.calendar_click(self.date_end)).grid(row=2, column=3)
@@ -82,9 +81,12 @@ class MainView(View):
         self.input_frame.mainloop()
 
 
-    def add_fetch_frame(self):
-        fetch_frame = tk.Frame(self)
-        pass
+    def add_analyse_frame(self):
+        self.fetch_frame = tk.Frame(self)
+        tk.Label(self.input_frame, text="Tweets that match your requirements are downloaded and\
+                                        ready to be to be proceseed!").grid(row=0)
+        self.fetch_frame.pack(fill="both", expand=True)
+        self.fetch_frame.mainloop()
 
     def add_plot_frame(self):
         pass
