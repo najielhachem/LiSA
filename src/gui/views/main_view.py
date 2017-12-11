@@ -1,8 +1,11 @@
 import tkinter as tk
 
-
-from view import View
-from "../controllers/main_view_controller" import MainViewController
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.figure import Figure
+from .view import View
+from ..controllers.main_view_controller import MainViewController
 
 
 class MainView(View):
@@ -17,6 +20,8 @@ class MainView(View):
         self.init_window()
         self.add_input_frame()
         self.add_fetch_frame()
+        self.add_plot_frame()
+        self.mainloop()
 
     def init_window(self):
         # changing the title of our master widget
@@ -78,8 +83,10 @@ class MainView(View):
 
         tk.Button(self.input_frame, text="Fetch", command=self.controller.fetch).grid(row=3)
 
+        #self.input_frame.grid(row=1, column=2)
         self.input_frame.pack(fill="both", expand=True)
-        self.input_frame.mainloop()
+
+        #self.input_frame.mainloop()
 
 
     def add_fetch_frame(self):
@@ -87,7 +94,27 @@ class MainView(View):
         pass
 
     def add_plot_frame(self):
-        pass
+        # init all the plot frame
+        self.plot_frame = tk.Frame(self)
+        self.plot_frame.pack(fill="both", expand=True)
+        #addint a subframe to draw a plot as i can add in the right other options or informations
+        plot = tk.Frame(self.plot_frame, bd=2, relief=tk.RAISED)
+        plot.pack(expand=1, fill=tk.X, pady=10, padx=5)
+
+        #init a figure
+        f = Figure(figsize=(5,5), dpi=100)
+        a = f.add_subplot(111)
+        # plot the figure
+        a.plot([1,2,3,4,5,6,7,8],[5,6,1,3,8,9,3,5])
+        #aggregate the figure f to the frame plot
+        c = FigureCanvasTkAgg(f, plot)
+        c.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        #adding the toolbar to the frame plot
+        toolbar = NavigationToolbar2TkAgg(c, plot)
+        toolbar.update()
+        c._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        plot.pack(expand=1, fill=tk.X, pady=10, padx=5)
+        c.show()
 
 
 # root = Tk()
