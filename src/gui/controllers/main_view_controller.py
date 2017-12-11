@@ -23,10 +23,15 @@ class MainViewController(Controller):
         text = "Fetching tweets..."
         tk.Label(self.view.input_frame, text=text).grid(row=4)
         self.view.input_frame.update()
-        tweets = parser.fetch_tweets(subject=self.view.subject.get(), since=self.view.date_start.get(),
-                        until=self.view.date_end.get(), near=self.view.location.get())
-        print(tweets)
+        subject = self.view.subject.get()
+        location = self.view.location.get()
+        tweets = parser.fetch_tweets(subject=subject, since=self.view.date_start.get(),
+                        until=self.view.date_end.get(), near=(None if location == "" else location))
+        for tweet in tweets:
+            print(tweet.text)
+        self.view.add_analyse_frame()
 
     def calendar_click(self, var):
         cd = CalendarDialog(self.view)
-        var.set(cd.result)
+        if cd.result != None:
+            var.set(cd.result)

@@ -11,6 +11,7 @@ pip install -Ur requirements.txt
 =======
 
 pip install twitterscraper
+pip install tkcalendar
 
 ## State of The Art
 ### Monkey Learn 
