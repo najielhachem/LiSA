@@ -5,7 +5,7 @@ import datetime
 from tkcalendar import Calendar
 import DatePicker as dp
 
-from "view" import View
+from view import View
 from "../controllers/main_view_controller" import MainViewController
 
 class MainView(View):
