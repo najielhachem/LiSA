@@ -47,7 +47,7 @@ def fetch_tweets(subject, since, until, near = None, limit = None):
     """
 
     query = get_query_str(subject, since, until, near, limit)
-    return query_tweets(query, limit)
+    return query_tweets(query, 10)
 
 def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = None):
     #TODO save tweets as object (encode datetime)

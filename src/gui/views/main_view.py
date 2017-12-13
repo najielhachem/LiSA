@@ -109,9 +109,12 @@ class MainView(View):
 
     def add_analyse_frame(self):
         self.fetch_frame = tk.Frame(self)
-        tk.Label(self.input_frame, text="Tweets that match your requirements are downloaded and\
-                                        ready to be to be proceseed!").grid(row=0)
-        self.fetch_frame.pack(fill="both", expand=True)
+        T = tk.Text(self.input_frame)
+        T.insert("Tweets that match your requirements are downloaded and ready to be to be proceseed!")
+        T.grid(row=5)
+
+
+        self.fetch_frame.pack()
         self.fetch_frame.mainloop()
 
     def add_plot_frame(self):
