@@ -55,13 +55,14 @@ class MainView(View):
         menu.add_cascade(label="More", menu=more)
 
 
+
     def init_controller(self):
         return MainViewController(self)
 
 
     def add_input_frame(self):
         self.input_frame = tk.Frame(self)
-        self.input_frame.grid(row = 0, column = 0, rowspan = 4, columnspan = 3)
+        self.input_frame.grid(row = 0, column = 0, rowspan = 4, columnspan = 4)
 
         # Frame Title
         lbl_frame = tk.Label(self.input_frame, text="Input")
@@ -100,21 +101,20 @@ class MainView(View):
 
     def add_fetch_frame(self):
         self.fetch_frame = tk.Frame(self)
-        self.fetch_frame.grid(row = 4, column = 0, rowspan = 3, columnspan = 3)
+        self.fetch_frame.grid(row = 4, column = 0, rowspan = 3, columnspan = 10)
         # Fetch Tweets
         btn_fetch = tk.Button(self.fetch_frame, text="Fetch Tweets",
                 command=self.controller.fetch)
-        btn_fetch.grid(row=4, column=1, columnspan=2, rowspan=1,
-               padx=5, pady=5)
+        btn_fetch.grid(row=0, column=1)
 
 
     def add_start_fetch_message(self):
-        tk.Label(self.fetch_frame, text="Fetching tweets...").grid(row=5, column = 0)
-        # self.view.input_frame.update()
+        lbl_msg = tk.Label(self.fetch_frame, text="Fetching tweets...")
+        lbl_msg.grid(row=1, column=1)
 
     def add_end_fetch_message(self):
-        tk.Label(self.fetch_frame, text="Tweets that match your requirements are downloaded and\
-                                        ready to be to be proceseed!").grid(row=6, column = 0)
+        lbl_msg = tk.Label(self.fetch_frame, text="Tweets that match your requirements are downloaded and ready to be to be proceseed!")
+        lbl_msg.grid(row=2, column=0, columnspan=6)
 
     def add_analyse_frame(self):
         self.analyse_frame = tk.Frame(self)
