@@ -19,7 +19,8 @@ class MainView(View):
         # init window and frames
         self.init_window()
         self.add_input_frame()
-
+        self.add_plot_frame()
+        self.mainloop()
     def init_window(self):
         # changing the title of our master widget
         self.parent.title("Projet Lisa")
@@ -71,16 +72,16 @@ class MainView(View):
         tk.Label(self.input_frame, text="Subject").grid(row=1, column=0)
         self.subject = tk.Entry(self.input_frame)
         self.subject.grid(row=1, column=1)
-       
+
         # Location Input
         tk.Label(self.input_frame, text="Location").grid(row=2, column=0)
         self.location = tk.Entry(self.input_frame)
         self.location.grid(row=2, column=1)
-        
+
         # Number of Tweets Input
         tk.Label(self.input_frame, text="Nb Tweets").grid(row=3, column=0)
         self.limit = tk.Entry(self.input_frame)
-        self.limit.grid(row=3, column=1)       
+        self.limit.grid(row=3, column=1)
 
         # Start Date Input
         tk.Label(self.input_frame, text="From").grid(row=1, column=2)
@@ -88,7 +89,7 @@ class MainView(View):
         btn_start = tk.Button(self.input_frame, textvariable=self.date_start,
                 command=lambda:self.controller.calendar_click(self.date_start))
         btn_start.grid(row=1, column=3)
-        
+
         # End Date Input
         tk.Label(self.input_frame, text="To").grid(row=2, column=2)
         self.date_end = tk.StringVar(value="2017-12-10")
@@ -115,7 +116,7 @@ class MainView(View):
 
 
         self.fetch_frame.pack()
-        self.fetch_frame.mainloop()
+
 
     def add_plot_frame(self):
         # init all the plot frame
