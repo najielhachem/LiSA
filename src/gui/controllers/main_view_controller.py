@@ -22,16 +22,15 @@ class MainViewController(Controller):
         self.view = view
 
     def fetch(self):
-        text = "Fetching tweets..."
-        tk.Label(self.view.input_frame, text=text).grid(row=4)
-        self.view.input_frame.update()
+        self.view.add_start_fetch_message()
         subject = self.view.subject.get()
         location = self.view.location.get()
-        tweets = parser.fetch_tweets(subject=subject, since=self.view.date_start.get(),
-                        until=self.view.date_end.get(), near=(None if location == "" else location), limit=10)
-        for tweet in tweets:
-            print(tweet.text)
-        self.view.add_analyse_frame()
+        limit = int(self.view.limit.get())
+        since = self.view.date_start.get()
+        until = self.view.date_end.get()
+        tweets = parser.fetch_tweets(subject=subject, since=since,
+                        until=until, near=(None if location == "" else location), limit=limit)
+        self.view.add_end_fetch_message()
 
     def calendar_click(self, var):
         cd = CalendarDialog(self.view)
