@@ -1,4 +1,5 @@
 from .controller import Controller
+from ..models.analyzer import Analyzer
 import data_processing.parser as parser
 
 import tkinter as tk
@@ -20,6 +21,10 @@ class MainViewController(Controller):
 
     def __init__(self, view):
         self.view = view
+        self.init_model()
+
+    def init_model(self):
+        self.model = Analyzer()
 
     def fetch(self):
         self.view.add_start_fetch_message()
@@ -30,7 +35,12 @@ class MainViewController(Controller):
         until = self.view.date_end.get()
         tweets = parser.fetch_tweets(subject=subject, since=since,
                         until=until, near=(None if location == "" else location), limit=limit)
+        self.model.set_tweets(tweets)
         self.view.add_end_fetch_message()
+        self.view.add_analyse_frame()
+
+    def analyze(self):
+        self.model.analyze()
 
     def calendar_click(self, var):
         cd = CalendarDialog(self.view)
