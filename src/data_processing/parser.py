@@ -30,7 +30,19 @@ def get_query_str(subject, since, until, near = None, limit = None):
     query += " since:" + since
     query += " until:" + until
     return query
-
+def seg_tweets(query, numsegments = 11):
+    """
+        Return list of tweets segmented by the attribute timestamp on [numsegments - 1] interval
+    Params :
+        :query -- list[tweets]: list of tweets done by a query
+    """
+    time_stamps = np.array([query[i].__getattribute__('timestamp') for i in range(len(query))])
+    time_min = time_stamps.min()
+    time_max = time_stamps.max()
+    delta = datetime.timedelta(seconds = ((time_max - time_min).total_seconds()/ numsegments))
+    querys_segemented = [[q for q in query
+    if( (( i  * delta) + time_min ) <= q.__getattribute__('timestamp') < (( (i + 1) * delta) + time_min ) )] for i in range(numsegments)]
+    return querys_segemented
 def fetch_tweets(subject, since, until, near = None, limit = None):
     """
     Returns tweets matching parameters
