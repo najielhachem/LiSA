@@ -30,13 +30,13 @@ class Classifier(ABC):
         pass
 
     def save(self, path="data/trained_classifiers/"):
-        with open(path + self.name, "w") as file:
+        with open(path + self.name, "wb") as file:
             file.write(pickle.dumps(self.classifier))
 
     def load(self, path="data/trained_classifiers/"):
         try:
-            with open(path + self.name, "r") as file:
-                self.classifier = pickle.loads(file.readlines()[0]))
+            with open(path + self.name, "rb") as file:
+                self.classifier = pickle.loads(b''.join(file.readlines()))
         except:
             print("This classifier has never been saved before")
 
@@ -58,7 +58,7 @@ class BernoulliNB(Classifier):
         self.classifier.fit(data_train, train_labels)
 
     def predict(self, data_test):
-        return self.predict(data_test)
+        return self.classifier.predict(data_test)
 
 class MultinomialNB(Classifier):
     def __init__(self, alpha=1.0):
@@ -75,7 +75,7 @@ class MultinomialNB(Classifier):
         self.classifier.fit(data_train, train_labels)
 
     def predict(self, data_test):
-        return self.predict(data_test)
+        return self.classifier.predict(data_test)
 
 
 # Linear Models Classifier
@@ -97,7 +97,7 @@ class Perceptron(Classifier):
         self.classifier.fit(data_train, train_labels)
 
     def predict(self, data_test):
-        return self.predict(data_test)
+        return self.classifier.predict(data_test)
 
 
 class LogisticRegression(Classifier):
@@ -109,7 +109,7 @@ class LogisticRegression(Classifier):
         self.classifier.fit(data_train, train_labels)
 
     def predict(self, data_test):
-        return self.predict(data_test)
+        return self.classifier.predict(data_test)
 
 class Ridge(Classifier):
     def __init__(self, tol, solver):
@@ -127,7 +127,7 @@ class Ridge(Classifier):
         self.classifier.fit(data_train, train_labels)
 
     def predict(self, data_test):
-        return self.predict(data_test)
+        return self.classifier.predict(data_test)
 
 # SVM Classifiers
 
@@ -146,4 +146,4 @@ class LinearSVC(Classifier):
         self.classifier.fit(data_train, train_labels)
 
     def predict(self, data_test):
-        return self.predict(data_test)
+        return self.classifier.predict(data_test)
