@@ -4,6 +4,8 @@ import sklearn.svm as skl_svm
 import sklearn.linear_model as skl_lm
 import sklearn.naive_bayes as skl_nb
 
+import pickle
+
 # Abstract Class: Classifier
 
 class Classifier(ABC):
@@ -17,6 +19,7 @@ class Classifier(ABC):
 
     def __init__(self):
         self.name = "Classifier"
+        self.classifier = Null
 
     @abstractmethod
     def fit(self, data_train, train_labels):
@@ -25,6 +28,17 @@ class Classifier(ABC):
     @abstractmethod
     def predict(self, data_test):
         pass
+
+    def save(self, path="data/trained_classifiers/"):
+        with open(path + self.name, "w") as file:
+            file.write(pickle.dumps(self.classifier))
+
+    def load(self, path="data/trained_classifiers/"):
+        try:
+            with open(path + self.name, "r") as file:
+                self.classifier = pickle.loads(file.readlines()[0]))
+        except:
+            print("This classifier has never been saved before")
 
 
 # Naive Bayes Classifiers
