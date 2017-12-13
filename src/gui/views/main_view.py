@@ -119,6 +119,8 @@ class MainView(View):
     def add_analyse_frame(self):
         self.analyse_frame = tk.Frame(self)
         self.analyse_frame.grid(row = 7, column = 0, rowspan = 3, columnspan = 3)
+        btn_analyze = tk.Button(self.analyse_frame, text="Analyze Tweets",
+                command=self.controller.analyze)
 
 
     def add_plot_frame(self):
