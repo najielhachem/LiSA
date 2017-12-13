@@ -40,7 +40,8 @@ class MainViewController(Controller):
         self.view.add_analyse_frame()
 
     def analyze(self):
-        self.model.analyze()
+        self.view.add_plot_frame()
+        # self.model.analyze()
 
     def calendar_click(self, var):
         cd = CalendarDialog(self.view)

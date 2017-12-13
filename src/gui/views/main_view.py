@@ -127,7 +127,8 @@ class MainView(View):
     def add_plot_frame(self):
         # init all the plot frame
         self.plot_frame = tk.Frame(self)
-        self.plot_frame.pack(fill="both", expand=True)
+        # self.plot_frame.pack(fill="both", expand=True)
+        self.plot_frame.grid(row = 8, column = 0)
         #addint a subframe to draw a plot as i can add in the right other options or informations
         plot = tk.Frame(self.plot_frame, bd=2, relief=tk.RAISED)
         plot.pack(expand=1, fill=tk.X, pady=10, padx=5)
