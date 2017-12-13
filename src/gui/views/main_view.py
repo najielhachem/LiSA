@@ -19,12 +19,6 @@ class MainView(View):
         # init window and frames
         self.init_window()
         self.add_input_frame()
-<<<<<<< HEAD
-        self.add_fetch_frame()
-        self.add_plot_frame()
-        self.mainloop()
-=======
->>>>>>> dfa0ff77e9931282babbb8f70a82a1251f82d290
 
     def init_window(self):
         # changing the title of our master widget
