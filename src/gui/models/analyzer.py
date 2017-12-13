@@ -12,4 +12,4 @@ class Analyzer:
             Args:
                 tweet_texts ([string]): Array of string corresponding to tweets
         """
-        return classifier.predict(self.tweet)
+        return self.classifier.predict(self.tweets)
