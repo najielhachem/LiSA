@@ -1,10 +1,10 @@
 import numpy as np
 
 import re
-import nltk 
-# nltk.download('wordnet')
-from nltk.stem.wordnet import WordNetLemmatizer
 
+import nltk
+nltk.download('wordnet')
+from nltk.stem.wordnet import WordNetLemmatizer
 
 class Preprocessor:
 
@@ -41,7 +41,7 @@ class Preprocessor:
         for i in range(n):
             escaped_emoticons[i] = (emoticons[i][0],
                     [emoji.replace(')', '\)').replace('(', '\(') for emoji in emoticons[i][1]])
-        
+
         emoticons_regex = [ \
                 (repl, re.compile(r"(" + "|".join(regx) + ")")) \
                 for (repl, regx) in escaped_emoticons \
@@ -101,10 +101,7 @@ class Preprocessor:
         tweet = self.replace_urls(tweet)
         tweet = self.uniform_emoticons(tweet)
         tweet = self.uniform_parenthesis(tweet)
-        tweet = self.replace_determinants(tweet)
-        tweet = self.remove_retweet(tweet)
+        tweet = self.remove_determinants(tweet)
         tweet = self.lemmatize(tweet)
         tweet = self.remove_ponctuation(tweet)
         return tweet
-
-
