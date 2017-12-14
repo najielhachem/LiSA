@@ -105,3 +105,6 @@ class Preprocessor:
         tweet = self.lemmatize(tweet)
         tweet = self.remove_ponctuation(tweet)
         return tweet
+    def process_data(self, tweets):
+        for i in range(len(tweets)):
+            tweets[i] = self.default_processing(tweets[i])

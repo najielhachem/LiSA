@@ -147,3 +147,12 @@ class LinearSVC(Classifier):
 
     def predict(self, data_test):
         return self.classifier.predict(data_test)
+def get_classifiers():
+    clf1 = LinearSVC()
+    clf2 = Ridge()
+    clf3 = MultinomialNB()
+    clfs = [clf1, clf2, clf3]
+    dic_clfs = {}
+    for clf in clfs:
+        dic_clfs[clf.name] = clf
+    return dic_clfs

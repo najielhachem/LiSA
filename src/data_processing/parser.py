@@ -98,6 +98,20 @@ def read_json(filename):
         lines = file.readlines()[0]
         data = json.loads(lines)
     return data
+def read_json_folder(folder):
+    """
+    Reads a directory containing json files and returns data as a dictionary
+
+    Params:
+        :folder -- str :  folder path to read from
+    """
+    for root, subFolders, files in os.walk(rootdir):
+        data = []
+        for file in files:
+            Doc = open(os.path.join(root,file), "r").readline()
+            data +=  json.loads(Doc)
+    return data
+
 
 def read_tweets(filename):
     """

@@ -5,7 +5,7 @@ import data_processing.parser as parser
 import tkinter as tk
 import tkcalendar
 import tkinter.simpledialog as simpledialog
-
+import data_processing.preprocessor as preprocessor
 import time, datetime
 
 class CalendarDialog(simpledialog.Dialog):
@@ -24,6 +24,19 @@ class MainViewController(Controller):
     def __init__(self, view):
         self.view = view
         self.init_model()
+        self.classifiers = self.load_classifiers()
+    def load_classifiers(self, data_path = "../../../data"):
+        """
+        Function that return  a dictionary {name clf: trained clf} either by
+        deserializing or retrain classifiers
+        """
+        #Load data_folder
+        data = np.array(parser.read_json_folder())
+        preprocessor.process_data(data[:,1])
+        self.classifiers = get_classifiers()
+        for key, value in self.classifiers.items():
+            #if [key]need to train
+            self.classifiers[key].fit(data[:,1], data[:,0])
 
     def init_model(self):
         self.model = Analyzer()
@@ -42,9 +55,9 @@ class MainViewController(Controller):
         self.view.add_message(self.view.data_frame, "Tweets that match your requirements are downloaded and ready to be to be proceseed!")
         self.view.btn_analyze.config(state='normal')
 
-    def analyze(self):
+    def analyze(self, name_clf="SVM"):
         # Classifie Tweets
-        self.model.analyze()
+        self.model.analyze(self.classifiers[name_clf])
         # Add Plot Frame
         self.view.add_plot_frame()
         self.view.btn_analyze.config(state='disabled')
