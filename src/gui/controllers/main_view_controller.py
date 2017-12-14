@@ -6,6 +6,8 @@ import tkinter as tk
 import tkcalendar
 import tkinter.simpledialog as simpledialog
 
+import time, datetime
+
 class CalendarDialog(simpledialog.Dialog):
     """
     Dialog box that displays a calendar and returns the selected dat
@@ -61,7 +63,12 @@ class MainViewController(Controller):
             period *= 3600 * 24 * 30
 
         # divide Tweets based on timestamp and period
-        segemented_tweets = self.model.segment_labels(period)
+        start = self.view.date_start.get()
+        start = time.mktime(datetime.datetime.strptime(start, "%Y-%m-%d").timetuple())
+        end = self.view.date_end.get()
+        end = time.mktime(datetime.datetime.strptime(end, "%Y-%m-%d").timetuple())
+
+        segemented_tweets = self.model.segment_labels(period, start, end)
 
         # plot data
         tweets = np.mean(segment_tweets, axis = 1)

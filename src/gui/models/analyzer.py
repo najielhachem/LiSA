@@ -16,24 +16,21 @@ class Analyzer:
         """
         self.labels = self.classifier.predict(self.tweets)
 
-    def segment_labels(self, period):
+    def segment_labels(self, period, start, end):
         """
             Return list of tweets segmented by the attribute timestamp on [nb_segments - 1] interval
         Params :
             :period -- period in seconds
         """
-        time_stamps = np.array([tweet.__getattribute__('timestamp') for tweet in self.tweets])
-        time_min = time_stamps.min()
-        time_max = time_stamps.max()
-        total_period = (time_max - time_min).total_seconds()
+        total_period = (end - start)
         print(total_period, period)
         nb_segments = math.ceil(total_period / period)
         print(nb_segments)
         segemented_labels = [
                 [ self.labels[j]
                     for j in range(self.tweets)
-                    if (i * period + time_min ) <= self.tweets[j].__getattribute__('timestamp')
-                    and self.tweets[j].__getattribute__('timestamp') < ((i + 1) * period + time_min)
+                    if (i * period + start ) <= self.tweets[j].__getattribute__('timestamp')
+                    and self.tweets[j].__getattribute__('timestamp') < ((i + 1) * period + start)
                 ] for i in range(nb_segments) ]
         return np.array(segemented_labels)
 
@@ -47,6 +44,7 @@ class Analyzer:
         time_min = time_stamps.min()
         time_max = time_stamps.max()
         total_period = time_max - time_min
+        print(total_period.total_seconds())
         delta = datetime.timedelta(seconds = (total_period.total_seconds()/ nb_segments))
         segemented_tweets = [
                 [ tweet
