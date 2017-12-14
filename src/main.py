@@ -11,7 +11,12 @@ def main(argv):
     # add MainView to root
     MainView(root).pack(side="top", fill="both", expand=True)
     # main loop
-    root.mainloop()
+    while True:
+        try:
+            root.mainloop()
+            break
+        except UnicodeDecodeError:
+            pass
 
 
 if __name__ == "__main__":
