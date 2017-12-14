@@ -19,6 +19,9 @@ class MainView(View):
         # init window and frames
         self.init_window()
         self.add_data_frame()
+        # Setting Reusable Variables to None
+        self.plot_frame = None
+        self.message_box = None
 
     def init_window(self):
         # changing the title of our master widget
@@ -77,12 +80,14 @@ class MainView(View):
         lbl_frame.config(font=("Courier", 20))
         self.add_plot_form(self.plot_frame)
 
-        # self.plot_data()
+    def rm_plot_frame(self):
+        if self.plot_frame is not None:
+            self.plot_frame.pack_forget()
 
     def add_plot_form(self, frame):
         # Period Label
         lbl_period = tk.Label(frame, text='Period')
-        lbl_period.grid(row=1, column=0)
+        lbl_period.grid(row=1, column=0, sticky='w')
         # Period Entry
         self.period_entry = tk.Entry(frame)
         self.period_entry.insert('end', '10')
@@ -91,7 +96,7 @@ class MainView(View):
         self.period_metric = tk.StringVar(frame)
         self.period_metric.set('hours')
         opt_metric = tk.OptionMenu(frame, self.period_metric, "hours", "days", "months")
-        opt_metric.grid(row=1, column=2)
+        opt_metric.grid(row=1, column=2, sticky='e')
         # Plot Button
         btn_plot = tk.Button(frame, text='Plot',
                 command=self.controller.plot)
@@ -142,8 +147,11 @@ class MainView(View):
 
 
     def add_message(self, frame, msg):
-        lbl_msg = tk.Message(frame, text=msg, relief='raised', aspect=400, bd=5)
-        lbl_msg.grid(row=6, column=0, columnspan=10, sticky='we', pady=10)
+        if self.message_box is None:
+            self.message_box = tk.Message(frame, text=msg, relief='raised', aspect=400, bd=5)
+            self.message_box.grid(row=6, column=0, columnspan=10, sticky='we', pady=10)
+        else:
+            self.message_box.config(text=msg)
 
 
     def plot_data(self, X, Y):
@@ -155,7 +163,7 @@ class MainView(View):
         a.plot(X, Y)
         # aggregate the figure f to the frame plot
         c = FigureCanvasTkAgg(f, self.plot_frame)
-        c.get_tk_widget().grid(row=3, column=0, columnspan=3, sticky='wes')
+        c.get_tk_widget().grid(row=3, column=0, columnspan=3, sticky='es')
         # adding the toolbar to the frame plot
         # toolbar = NavigationToolbar2TkAgg(c, self.plot_frame)
         # toolbar.update()

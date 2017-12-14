@@ -28,6 +28,7 @@ class MainViewController(Controller):
 
     def fetch(self):
         self.view.add_message(self.view.data_frame, "Fetching tweets...")
+        self.view.rm_plot_frame()
         subject = self.view.subject.get()
         location = self.view.location.get()
         limit = int(self.view.limit.get())
@@ -35,6 +36,7 @@ class MainViewController(Controller):
         until = self.view.date_end.get()
         tweets = parser.fetch_tweets(subject=subject, since=since,
                         until=until, near=(None if location == "" else location), limit=limit)
+        print(len(tweets))
         self.model.set_tweets(tweets)
         self.view.add_message(self.view.data_frame, "Tweets that match your requirements are downloaded and ready to be to be proceseed!")
         self.view.btn_analyze.config(state='normal')
@@ -48,12 +50,22 @@ class MainViewController(Controller):
 
 
     def plot(self):
+        # get data
+        period = int(self.view.period_entry.get())
+        metric = self.view.period_metric.get()
+        if metric == 'hours':
+            period *= 3600
+        if metric == 'days':
+            period *= 3600 * 24
+        if metric == 'months':
+            period *= 3600 * 24 * 30
+
         # divide Tweets based on timestamp and period
+        segemented_tweets = self.model.segment_labels(period)
 
         # plot data
-        tweets = [1,2,3,4,5,6,7,8] # for testing
-        periods = [5,6,1,3,8,9,3,5] # for testing
-        self.view.plot_data(tweets, periods)
+        tweets = np.mean(segment_tweets, axis = 1)
+        self.view.plot_data(tweets, np.arange(tweets.shape[0]))
 
     def calendar_click(self, var):
         cd = CalendarDialog(self.view)
