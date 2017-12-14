@@ -85,16 +85,16 @@ class MainView(View):
         lbl_period.grid(row=1, column=0)
         # Period Entry
         self.period_entry = tk.Entry(frame)
-        self.period_entry.grid(row=1, column=1)
+        self.period_entry.grid(row=1, column=1, columnspan=2)
         # Period Metric
         self.period_metric = tk.StringVar(frame)
         self.period_metric.set('hours')
         opt_metric = tk.OptionMenu(frame, self.period_metric, "hours", "days", "months")
-        opt_metric.grid(row=1, column=2)
+        opt_metric.grid(row=1, column=3)
         # Plot Button
         btn_plot = tk.Button(frame, text='Plot',
                 command=self.controller.plot)
-        btn_plot.grid(row=2, column=1)
+        btn_plot.grid(row=2, column=1, columnspan=2)
 
     def add_input_form(self, frame):
         # Subject Input
@@ -149,14 +149,13 @@ class MainView(View):
         a = f.add_subplot(111)
         # plot the figure
         a.plot(X, Y)
-        #aggregate the figure f to the frame plot
+        # aggregate the figure f to the frame plot
         c = FigureCanvasTkAgg(f, self.plot_frame)
-        # c.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
         c.get_tk_widget().grid(row=3, column=1, columnspan=3, sticky='wes')
-        #adding the toolbar to the frame plot
+        # adding the toolbar to the frame plot
         # toolbar = NavigationToolbar2TkAgg(c, self.plot_frame)
         # toolbar.update()
-        # c._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        # c._tkcanvas.grid(row=4, column=1, columnspan=3, sticky='wes')
         c.show()
 
 # root = Tk()
