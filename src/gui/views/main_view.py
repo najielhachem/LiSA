@@ -145,17 +145,18 @@ class MainView(View):
     def plot_data(self, X, Y):
         #addint a subframe to draw a plot as i can add in the right other options or information
         #init a figure
-        f = Figure(figsize=(5,5), dpi=100)
+        f = Figure(figsize=(4,3), dpi=100)
         a = f.add_subplot(111)
         # plot the figure
         a.plot(X, Y)
         #aggregate the figure f to the frame plot
         c = FigureCanvasTkAgg(f, self.plot_frame)
-        c.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        # c.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        c.get_tk_widget().grid(row=3, column=1, columnspan=3, sticky='wes')
         #adding the toolbar to the frame plot
-        toolbar = NavigationToolbar2TkAgg(c, self.plot_frame)
-        toolbar.update()
-        c._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        # toolbar = NavigationToolbar2TkAgg(c, self.plot_frame)
+        # toolbar.update()
+        # c._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         c.show()
 
 # root = Tk()
