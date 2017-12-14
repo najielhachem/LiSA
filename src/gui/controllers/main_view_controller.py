@@ -27,7 +27,7 @@ class MainViewController(Controller):
         self.model = Analyzer()
 
     def fetch(self):
-        self.view.add_start_fetch_message()
+        self.view.add_message(self.view.data_frame, "Fetching tweets...")
         subject = self.view.subject.get()
         location = self.view.location.get()
         limit = int(self.view.limit.get())
@@ -36,12 +36,23 @@ class MainViewController(Controller):
         tweets = parser.fetch_tweets(subject=subject, since=since,
                         until=until, near=(None if location == "" else location), limit=limit)
         self.model.set_tweets(tweets)
-        self.view.add_end_fetch_message()
-        self.view.add_analyse_frame()
+        self.view.add_message(self.view.data_frame, "Tweets that match your requirements are downloaded and ready to be to be proceseed!")
+        self.view.btn_analyze.config(state='normal')
 
     def analyze(self):
+        # Classifie Tweets
+        #### # self.model.analyze()
+        # Add Plot Frame
         self.view.add_plot_frame()
-        # self.model.analyze()
+
+
+    def plot(self):
+        # divide Tweets based on timestamp and period
+
+        # plot data
+        tweets = [1,2,3,4,5,6,7,8] # for testing
+        periods = [5,6,1,3,8,9,3,5] # for testing
+        self.view.plot_data(tweets, periods)
 
     def calendar_click(self, var):
         cd = CalendarDialog(self.view)

@@ -18,8 +18,7 @@ class MainView(View):
         self.controller = self.init_controller()
         # init window and frames
         self.init_window()
-        self.add_input_frame()
-        self.add_fetch_frame()
+        self.add_data_frame()
 
     def init_window(self):
         # changing the title of our master widget
@@ -55,98 +54,109 @@ class MainView(View):
         menu.add_cascade(label="More", menu=more)
 
 
-
     def init_controller(self):
         return MainViewController(self)
 
-
-    def add_input_frame(self):
-        self.input_frame = tk.Frame(self)
-        self.input_frame.grid(row = 0, column = 0, rowspan = 4, columnspan = 4)
-
-        # Frame Title
-        lbl_frame = tk.Label(self.input_frame, text="Input")
+    def add_data_frame(self):
+        self.data_frame = tk.Frame(self, bg='blue')
+        self.data_frame.pack(fill='both', side='left', expand=1)
+        # Frame title
+        lbl_frame = tk.Label(self.data_frame, text="Fetcher")
         lbl_frame.grid(row=0, column=1, columnspan=2, rowspan=1,
                padx=5, pady=5)
         lbl_frame.config(font=("Courier", 20))
+        self.add_input_form(self.data_frame)
 
+    def add_plot_frame(self):
+        self.plot_frame = tk.Frame(self, bg='red')
+        self.plot_frame.pack(fill='both', side='right', expand=1)
+        # Frame title
+        lbl_frame = tk.Label(self.plot_frame, text="Analyzer")
+        lbl_frame.grid(row=0, column=1, columnspan=2, rowspan=1,
+               padx=5, pady=5)
+        lbl_frame.config(font=("Courier", 20))
+        self.add_plot_form(self.plot_frame)
+
+        # self.plot_data()
+
+    def add_plot_form(self, frame):
+        # Period Label
+        lbl_period = tk.Label(frame, text='Period')
+        lbl_period.grid(row=1, column=0)
+        # Period Entry
+        self.period_entry = tk.Entry(frame)
+        self.period_entry.grid(row=1, column=1)
+        # Period Metric
+        self.period_metric = tk.StringVar(frame)
+        self.period_metric.set('hours')
+        opt_metric = tk.OptionMenu(frame, self.period_metric, "hours", "days", "months")
+        opt_metric.grid(row=1, column=2)
+        # Plot Button
+        btn_plot = tk.Button(frame, text='Plot',
+                command=self.controller.plot)
+        btn_plot.grid(row=2, column=1)
+
+    def add_input_form(self, frame):
         # Subject Input
-        tk.Label(self.input_frame, text="Subject").grid(row=1, column=0)
-        self.subject = tk.Entry(self.input_frame)
+        tk.Label(frame, text="Subject").grid(row=1, column=0)
+        self.subject = tk.Entry(frame)
         self.subject.grid(row=1, column=1)
 
         # Location Input
-        tk.Label(self.input_frame, text="Location").grid(row=2, column=0)
-        self.location = tk.Entry(self.input_frame)
+        tk.Label(frame, text="Location").grid(row=2, column=0)
+        self.location = tk.Entry(frame)
         self.location.grid(row=2, column=1)
 
         # Number of Tweets Input
-        tk.Label(self.input_frame, text="Nb Tweets").grid(row=3, column=0)
-        self.limit = tk.Entry(self.input_frame)
+        tk.Label(frame, text="Nb Tweets").grid(row=3, column=0)
+        self.limit = tk.Entry(frame)
         self.limit.grid(row=3, column=1)
 
         # Start Date Input
-        tk.Label(self.input_frame, text="From").grid(row=1, column=2)
+        tk.Label(frame, text="From").grid(row=1, column=2)
         self.date_start = tk.StringVar(value="2017-12-09")
-        btn_start = tk.Button(self.input_frame, textvariable=self.date_start,
+        btn_start = tk.Button(frame, textvariable=self.date_start,
                 command=lambda:self.controller.calendar_click(self.date_start))
         btn_start.grid(row=1, column=3)
 
         # End Date Input
-        tk.Label(self.input_frame, text="To").grid(row=2, column=2)
+        tk.Label(frame, text="To").grid(row=2, column=2)
         self.date_end = tk.StringVar(value="2017-12-10")
-        btn_end = tk.Button(self.input_frame, textvariable=self.date_end,
+        btn_end = tk.Button(frame, textvariable=self.date_end,
                 command=lambda:self.controller.calendar_click(self.date_end))
         btn_end.grid(row=2, column=3)
 
-    def add_fetch_frame(self):
-        self.fetch_frame = tk.Frame(self)
-        self.fetch_frame.grid(row = 4, column = 0, rowspan = 3, columnspan = 10)
-        # Fetch Tweets
-        btn_fetch = tk.Button(self.fetch_frame, text="Fetch Tweets",
+        # Add Fetch Tweets Button
+        self.btn_fetch = tk.Button(frame, text="Fetch Tweets",
                 command=self.controller.fetch)
-        btn_fetch.grid(row=0, column=1)
-
-
-    def add_start_fetch_message(self):
-        lbl_msg = tk.Label(self.fetch_frame, text="Fetching tweets...")
-        lbl_msg.grid(row=1, column=1)
-
-    def add_end_fetch_message(self):
-        lbl_msg = tk.Label(self.fetch_frame, text="Tweets that match your requirements are downloaded and ready to be to be proceseed!")
-        lbl_msg.grid(row=2, column=0, columnspan=6)
-
-    def add_analyse_frame(self):
-        self.analyse_frame = tk.Frame(self)
-        self.analyse_frame.grid(row = 7, column = 0, rowspan = 3, columnspan = 10)
-        btn_analyze = tk.Button(self.analyse_frame, text="Analyze Tweets",
+        self.btn_fetch.grid(row=4, column=1)
+        # Add Analyze Tweets Button
+        self.btn_analyze = tk.Button(frame, text="Analyze Tweets",
                 command=self.controller.analyze)
-        btn_analyze.grid(row=0, column = 0)
+        self.btn_analyze.grid(row=5, column = 1)
+        self.btn_analyze.config(state='disabled')
 
 
-    def add_plot_frame(self):
-        # init all the plot frame
-        self.plot_frame = tk.Frame(self)
-        self.plot_frame.grid(row = 8, column = 0)
-        #addint a subframe to draw a plot as i can add in the right other options or informations
-        plot = tk.Frame(self.plot_frame, bd=2, relief=tk.RAISED)
-        plot.pack(expand=1, fill=tk.X, pady=10, padx=5)
+    def add_message(self, frame, msg):
+        lbl_msg = tk.Message(frame, text=msg, relief='raised', aspect=400, bg='green')
+        lbl_msg.grid(row=6, column=0, columnspan=10, sticky='we', pady=10)
 
+
+    def plot_data(self, X, Y):
+        #addint a subframe to draw a plot as i can add in the right other options or information
         #init a figure
         f = Figure(figsize=(5,5), dpi=100)
         a = f.add_subplot(111)
         # plot the figure
-        a.plot([1,2,3,4,5,6,7,8],[5,6,1,3,8,9,3,5])
+        a.plot(X, Y)
         #aggregate the figure f to the frame plot
-        c = FigureCanvasTkAgg(f, plot)
+        c = FigureCanvasTkAgg(f, self.plot_frame)
         c.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
         #adding the toolbar to the frame plot
-        toolbar = NavigationToolbar2TkAgg(c, plot)
+        toolbar = NavigationToolbar2TkAgg(c, self.plot_frame)
         toolbar.update()
         c._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-        plot.pack(expand=1, fill=tk.X, pady=10, padx=5)
         c.show()
-
 
 # root = Tk()
 # root.title('Lisa')
