@@ -58,7 +58,7 @@ class MainView(View):
         return MainViewController(self)
 
     def add_data_frame(self):
-        self.data_frame = tk.Frame(self, bg='blue')
+        self.data_frame = tk.Frame(self)
         self.data_frame.pack(fill='both', side='left', expand=1)
         # Frame title
         lbl_frame = tk.Label(self.data_frame, text="Fetcher")
@@ -68,7 +68,7 @@ class MainView(View):
         self.add_input_form(self.data_frame)
 
     def add_plot_frame(self):
-        self.plot_frame = tk.Frame(self, bg='red')
+        self.plot_frame = tk.Frame(self)
         self.plot_frame.pack(fill='both', side='right', expand=1)
         # Frame title
         lbl_frame = tk.Label(self.plot_frame, text="Analyzer")
@@ -85,12 +85,13 @@ class MainView(View):
         lbl_period.grid(row=1, column=0)
         # Period Entry
         self.period_entry = tk.Entry(frame)
-        self.period_entry.grid(row=1, column=1, columnspan=2)
+        self.period_entry.insert('end', '10')
+        self.period_entry.grid(row=1, column=1)
         # Period Metric
         self.period_metric = tk.StringVar(frame)
         self.period_metric.set('hours')
         opt_metric = tk.OptionMenu(frame, self.period_metric, "hours", "days", "months")
-        opt_metric.grid(row=1, column=3)
+        opt_metric.grid(row=1, column=2)
         # Plot Button
         btn_plot = tk.Button(frame, text='Plot',
                 command=self.controller.plot)
@@ -100,16 +101,19 @@ class MainView(View):
         # Subject Input
         tk.Label(frame, text="Subject").grid(row=1, column=0)
         self.subject = tk.Entry(frame)
+        self.subject.insert('end', 'Trump')
         self.subject.grid(row=1, column=1)
 
         # Location Input
         tk.Label(frame, text="Location").grid(row=2, column=0)
         self.location = tk.Entry(frame)
+        self.location.insert('end', 'Paris')
         self.location.grid(row=2, column=1)
 
         # Number of Tweets Input
         tk.Label(frame, text="Nb Tweets").grid(row=3, column=0)
         self.limit = tk.Entry(frame)
+        self.limit.insert('end', '10')
         self.limit.grid(row=3, column=1)
 
         # Start Date Input
@@ -138,7 +142,7 @@ class MainView(View):
 
 
     def add_message(self, frame, msg):
-        lbl_msg = tk.Message(frame, text=msg, relief='raised', aspect=400, bg='green')
+        lbl_msg = tk.Message(frame, text=msg, relief='raised', aspect=400, bd=5)
         lbl_msg.grid(row=6, column=0, columnspan=10, sticky='we', pady=10)
 
 
@@ -151,7 +155,7 @@ class MainView(View):
         a.plot(X, Y)
         # aggregate the figure f to the frame plot
         c = FigureCanvasTkAgg(f, self.plot_frame)
-        c.get_tk_widget().grid(row=3, column=1, columnspan=3, sticky='wes')
+        c.get_tk_widget().grid(row=3, column=0, columnspan=3, sticky='wes')
         # adding the toolbar to the frame plot
         # toolbar = NavigationToolbar2TkAgg(c, self.plot_frame)
         # toolbar.update()

@@ -44,6 +44,7 @@ class MainViewController(Controller):
         #### # self.model.analyze()
         # Add Plot Frame
         self.view.add_plot_frame()
+        self.view.btn_analyze.config(state='disabled')
 
 
     def plot(self):
