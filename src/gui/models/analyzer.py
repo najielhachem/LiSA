@@ -1,8 +1,10 @@
 from .classifiers import *
-from ..data_processing.preprocessor import Preprocessor
+import data_processing.preprocessor as preprocessor
 
 import numpy as np
 import math
+
+import sklearn.feature_extraction.text as skl_txt
 
 class Analyzer:
     def __init__(self, classifier = LinearSVC()):
@@ -17,8 +19,9 @@ class Analyzer:
             Args:
                 tweet_texts ([string]): Array of string corresponding to tweets
         """
-        processor = Preprocessor()
+        processor = preprocessor.Preprocessor()
         tweets_text = [processor.default_processing(tweet.text) for tweet in self.tweets]
+        tweets_text = self.vectorize_data(tweets_text)
         self.labels = self.classifier.predict(tweets_text)
 
     def segment_labels(self, period, start, end):
@@ -55,3 +58,9 @@ class Analyzer:
                     and t.__getattribute__('timestamp') < ((i + 1) * delta + time_min)
                 ] for i in range(nb_segments) ]
         return np.array(segemented_tweets), total_period
+
+    def vectorize_data(self, text_data, ngrams=(1,1), binn=False, idf=True):
+        if (binn == True):
+            idf = False
+        vectorizer = skl_txt.TfidfVectorizer(use_idf = idf, binary = binn, ngram_range = ngrams)
+        return vectorizer.fit_transform(text_data)
