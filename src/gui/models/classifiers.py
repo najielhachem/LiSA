@@ -132,7 +132,7 @@ class Ridge(Classifier):
 # SVM Classifiers
 
 class LinearSVC(Classifier):
-    def __init__(self, random_state):
+    def __init__(self, random_state = None):
         """ LinearSVC classifier imported from  sklearn
         Args:
             random_state (float): The seed of the pseudo random number generator

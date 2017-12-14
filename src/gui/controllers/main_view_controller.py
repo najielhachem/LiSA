@@ -38,14 +38,13 @@ class MainViewController(Controller):
         until = self.view.date_end.get()
         tweets = parser.fetch_tweets(subject=subject, since=since,
                         until=until, near=(None if location == "" else location), limit=limit)
-        print(len(tweets))
         self.model.set_tweets(tweets)
         self.view.add_message(self.view.data_frame, "Tweets that match your requirements are downloaded and ready to be to be proceseed!")
         self.view.btn_analyze.config(state='normal')
 
     def analyze(self):
         # Classifie Tweets
-        #### # self.model.analyze()
+        self.model.analyze()
         # Add Plot Frame
         self.view.add_plot_frame()
         self.view.btn_analyze.config(state='disabled')

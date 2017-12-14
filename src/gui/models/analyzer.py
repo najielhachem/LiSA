@@ -1,10 +1,13 @@
 from .classifiers import *
+from ..data_processing.preprocessor import Preprocessor
+
 import numpy as np
 import math
 
 class Analyzer:
-    def __init__(self, classifier = BernoulliNB()):
+    def __init__(self, classifier = LinearSVC()):
         self.classifier = classifier
+        self.classifier.load()
 
     def set_tweets(self, tweets):
         self.tweets = tweets
@@ -14,7 +17,9 @@ class Analyzer:
             Args:
                 tweet_texts ([string]): Array of string corresponding to tweets
         """
-        self.labels = self.classifier.predict(self.tweets)
+        processor = Preprocessor()
+        tweets_text = [processor.default_processing(tweet.text) for tweet in self.tweets]
+        self.labels = self.classifier.predict(tweets_text)
 
     def segment_labels(self, period, start, end):
         """
@@ -23,9 +28,7 @@ class Analyzer:
             :period -- period in seconds
         """
         total_period = (end - start)
-        print(total_period, period)
         nb_segments = math.ceil(total_period / period)
-        print(nb_segments)
         segemented_labels = [
                 [ self.labels[j]
                     for j in range(self.tweets)
@@ -44,7 +47,6 @@ class Analyzer:
         time_min = time_stamps.min()
         time_max = time_stamps.max()
         total_period = time_max - time_min
-        print(total_period.total_seconds())
         delta = datetime.timedelta(seconds = (total_period.total_seconds()/ nb_segments))
         segemented_tweets = [
                 [ tweet
