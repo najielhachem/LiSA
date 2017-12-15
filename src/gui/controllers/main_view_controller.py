@@ -32,6 +32,7 @@ class MainViewController(Controller):
     def fetch(self):
         self.view.add_message(self.view.data_frame, "Fetching tweets...")
         self.view.rm_plot_frame()
+        self.view.update()
         subject = self.view.subject.get()
         location = self.view.location.get()
         limit = int(self.view.limit.get())
