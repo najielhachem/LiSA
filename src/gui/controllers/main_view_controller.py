@@ -77,7 +77,7 @@ class MainViewController(Controller):
         print(data)
 
         # plot data
-        self.view.plot_data(data, range(len(data)))
+        self.view.plot_data(range(len(data)), data)
 
     def calendar_click(self, var):
         cd = CalendarDialog(self.view)

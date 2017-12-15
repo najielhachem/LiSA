@@ -160,7 +160,8 @@ class MainView(View):
         f = Figure(figsize=(4,3), dpi=100)
         a = f.add_subplot(111)
         # plot the figure
-        a.plot(Y, X)
+        a.bar(X, Y)
+        # a.plot(X, Y)
         # aggregate the figure f to the frame plot
         c = FigureCanvasTkAgg(f, self.plot_frame)
         c.get_tk_widget().grid(row=3, column=0, columnspan=3, sticky='es')
