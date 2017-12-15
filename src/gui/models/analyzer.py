@@ -1,15 +1,15 @@
 from .classifiers import *
 import data_processing.preprocessor as preprocessor
-
+from data_processing.parser as parser
 import numpy as np
 import math
-
 import sklearn.feature_extraction.text as skl_txt
 
 class Analyzer:
     def __init__(self, classifier = LinearSVC()):
-        self.classifier = classifier
-        self.classifier.load()
+        self.classifier =classifier
+
+
 
     def set_tweets(self, tweets):
         self.tweets = tweets
