@@ -29,11 +29,11 @@ class Classifier(ABC):
     def predict(self, data_test):
         pass
 
-    def save(self, path="data/trained_classifiers/"):
+    def save(self, path="data/objects/trained_classifiers/"):
         with open(path + self.name, "wb") as file:
             file.write(pickle.dumps(self.classifier))
 
-    def load(self, path="data/trained_classifiers/"):
+    def load(self, path="data/objects/trained_classifiers/"):
         try:
             with open(path + self.name, "rb") as file:
                 self.classifier = pickle.loads(b''.join(file.readlines()))

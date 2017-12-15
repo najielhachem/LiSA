@@ -5,11 +5,12 @@ import numpy as np
 import math
 import sklearn.feature_extraction.text as skl_txt
 
+import pickle
+
 class Analyzer:
     def __init__(self, classifier = LinearSVC()):
-        self.classifier =classifier
-
-
+        self.classifier = classifier
+        self.vectorizer = None
 
     def set_tweets(self, tweets):
         self.tweets = tweets
@@ -27,8 +28,6 @@ class Analyzer:
         except:
             self.classifier.load()
             self.labels = self.classifier.predict(tweets_text)
-
-
 
     def segment_labels(self, period, start, end):
         """
@@ -65,8 +64,14 @@ class Analyzer:
                 ] for i in range(nb_segments) ]
         return np.array(segemented_tweets), total_period
 
-    def vectorize_data(self, text_data, ngrams=(1,1), binn=False, idf=True):
-        if (binn == True):
-            idf = False
-        vectorizer = skl_txt.TfidfVectorizer(use_idf = idf, binary = binn, ngram_range = ngrams)
-        return vectorizer.fit_transform(text_data)
+    def __load_vectorizer(self, path='data/objects/vectorizers/tfidf'):
+        try:
+            with open(path, "rb") as file:
+                self.vectorizer = pickle.loads(b''.join(file.readlines()))
+        except:
+            print("This vectorizer does not exist.")
+
+    def vectorize_data(self, text_data):
+        if self.vectorizer is None:
+            self.__load_vectorizer()
+        return self.vectorizer.transform(text_data)
