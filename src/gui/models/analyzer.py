@@ -1,6 +1,6 @@
 from .classifiers import *
 import data_processing.preprocessor as preprocessor
-from data_processing.parser as parser
+import data_processing.parser as parser
 import numpy as np
 import math
 import sklearn.feature_extraction.text as skl_txt
@@ -22,7 +22,13 @@ class Analyzer:
         processor = preprocessor.Preprocessor()
         tweets_text = [processor.default_processing(tweet.text) for tweet in self.tweets]
         tweets_text = self.vectorize_data(tweets_text)
-        self.labels = self.classifier.predict(tweets_text)
+        try:
+            self.labels = self.classifier.predict(tweets_text)
+        except:
+            self.classifier.load()
+            self.labels = self.classifier.predict(tweets_text)
+
+
 
     def segment_labels(self, period, start, end):
         """
