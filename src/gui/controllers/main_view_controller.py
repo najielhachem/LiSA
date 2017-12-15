@@ -76,7 +76,6 @@ class MainViewController(Controller):
 
         # get data
         data = self.model.segment_labels(period, start, end)
-        print(data)
 
         # plot data
         self.view.plot_data(range(len(data)), data)

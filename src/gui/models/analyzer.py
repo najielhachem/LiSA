@@ -45,10 +45,11 @@ class Analyzer:
             for i, tweet in enumerate(self.tweets):
                 tweet_time = tweet.__getattribute__('timestamp')
                 tweet_time = time.mktime(tweet_time.timetuple()) # transform to seconds
-                if (i * period + start ) <= tweet_time and tweet_time < ((i + 1) * period + start):
+                if (segment * period + start ) <= tweet_time and tweet_time < ((segment + 1) * period + start):
                     tweet_label = self.labels[i]
                     label += tweet_label
                     nb_tweets += 1
+            nb_tweets = 1 if nb_tweets == 0 else nb_tweets
             label = label / nb_tweets
             segmented_labels[segment] = label
         return segmented_labels
