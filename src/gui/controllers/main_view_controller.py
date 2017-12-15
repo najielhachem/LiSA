@@ -41,7 +41,8 @@ class MainViewController(Controller):
         tweets = parser.fetch_tweets(subject=subject, since=since,
                         until=until, near=(None if location == "" else location), limit=limit)
         self.model.set_tweets(tweets)
-        self.view.add_message(self.view.data_frame, "Tweets that match your requirements are downloaded and ready to be to be proceseed!")
+        text_message = "Tweets that match your requirements are downloaded and ready to be to be proceseed!\nTotal of {} tweets download".format(len(tweets))
+        self.view.add_message(self.view.data_frame, text_message)
         self.view.btn_analyze.config(state='normal')
 
     def analyze(self):
@@ -69,11 +70,12 @@ class MainViewController(Controller):
         end = self.view.date_end.get()
         end = time.mktime(datetime.datetime.strptime(end, "%Y-%m-%d").timetuple())
 
-        segemented_tweets = self.model.segment_labels(period, start, end)
+        # get data
+        data = self.model.segment_labels(period, start, end)
+        print(data)
 
         # plot data
-        tweets = np.mean(segment_tweets, axis = 1)
-        self.view.plot_data(tweets, np.arange(tweets.shape[0]))
+        self.view.plot_data(data, range(len(data)))
 
     def calendar_click(self, var):
         cd = CalendarDialog(self.view)

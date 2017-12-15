@@ -118,12 +118,12 @@ class MainView(View):
         # Number of Tweets Input
         tk.Label(frame, text="Nb Tweets").grid(row=3, column=0)
         self.limit = tk.Entry(frame)
-        self.limit.insert('end', '10')
+        self.limit.insert('end', '100')
         self.limit.grid(row=3, column=1)
 
         # Start Date Input
         tk.Label(frame, text="From").grid(row=1, column=2)
-        self.date_start = tk.StringVar(value="2017-12-09")
+        self.date_start = tk.StringVar(value="2017-12-02")
         btn_start = tk.Button(frame, textvariable=self.date_start,
                 command=lambda:self.controller.calendar_click(self.date_start))
         btn_start.grid(row=1, column=3)
@@ -160,7 +160,7 @@ class MainView(View):
         f = Figure(figsize=(4,3), dpi=100)
         a = f.add_subplot(111)
         # plot the figure
-        a.plot(X, Y)
+        a.plot(Y, X)
         # aggregate the figure f to the frame plot
         c = FigureCanvasTkAgg(f, self.plot_frame)
         c.get_tk_widget().grid(row=3, column=0, columnspan=3, sticky='es')

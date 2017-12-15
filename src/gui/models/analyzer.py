@@ -1,10 +1,10 @@
 from .classifiers import *
 import data_processing.preprocessor as preprocessor
 import data_processing.parser as parser
-import numpy as np
 import math
 import sklearn.feature_extraction.text as skl_txt
 
+import time
 import pickle
 
 class Analyzer:
@@ -37,13 +37,20 @@ class Analyzer:
         """
         total_period = (end - start)
         nb_segments = math.ceil(total_period / period)
-        segemented_labels = [
-                [ self.labels[j]
-                    for j in range(self.tweets)
-                    if (i * period + start ) <= self.tweets[j].__getattribute__('timestamp')
-                    and self.tweets[j].__getattribute__('timestamp') < ((i + 1) * period + start)
-                ] for i in range(nb_segments) ]
-        return np.array(segemented_labels)
+        segmented_labels = [float] * nb_segments
+        for segment in range(nb_segments):
+            label = 0
+            nb_tweets = 0
+            for i, tweet in enumerate(self.tweets):
+                tweet_time = tweet.__getattribute__('timestamp')
+                tweet_time = time.mktime(tweet_time.timetuple()) # transform to seconds
+                if (i * period + start ) <= tweet_time and tweet_time < ((i + 1) * period + start):
+                    tweet_label = self.labels[i]
+                    label += tweet_label
+                    nb_tweets += 1
+            label = label / nb_tweets
+            segmented_labels[segment] = label
+        return segmented_labels
 
     def segment_tweets_nb_segments(self, nb_segments):
         """
