@@ -46,6 +46,8 @@ class MainViewController(Controller):
         self.view.btn_analyze.config(state='normal')
 
     def analyze(self):
+        self.view.add_message(self.view.data_frame, "Analyzing tweets")
+        self.view.update()
         # Classifie Tweets
         self.model.analyze()
         # Add Plot Frame
