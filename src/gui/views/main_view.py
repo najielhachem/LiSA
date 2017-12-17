@@ -1,4 +1,5 @@
 import tkinter as tk
+import datetime
 
 import matplotlib
 matplotlib.use("TkAgg")
@@ -121,16 +122,22 @@ class MainView(View):
         self.limit.insert('end', '100')
         self.limit.grid(row=3, column=1)
 
+        # Start date interval
+        number_days_offset = 7
+        # Current date
+        now = datetime.datetime.now()
+        begin = now - datetime.timedelta(days=number_days_offset)
+
         # Start Date Input
         tk.Label(frame, text="From").grid(row=1, column=2)
-        self.date_start = tk.StringVar(value="2017-12-02")
+        self.date_start = tk.StringVar(value=str(begin.year) + "-" + str(begin.month) + "-" + str(begin.day))
         btn_start = tk.Button(frame, textvariable=self.date_start,
                 command=lambda:self.controller.calendar_click(self.date_start))
         btn_start.grid(row=1, column=3)
 
         # End Date Input
         tk.Label(frame, text="To").grid(row=2, column=2)
-        self.date_end = tk.StringVar(value="2017-12-10")
+        self.date_end = tk.StringVar(value=str(now.year) + "-" + str(now.month) + "-" + str(now.day))
         btn_end = tk.Button(frame, textvariable=self.date_end,
                 command=lambda:self.controller.calendar_click(self.date_end))
         btn_end.grid(row=2, column=3)
