@@ -164,10 +164,14 @@ class MainView(View):
     def plot_data(self, X, Y):
         #addint a subframe to draw a plot as i can add in the right other options or information
         #init a figure
-        f = Figure(figsize=(4,3), dpi=100)
+        f = Figure(figsize=(5,4), dpi=100)
         a = f.add_subplot(111)
         # plot the figure
         a.bar(X, Y)
+        # legend for bar(s)
+        # a.legend(['Test'])
+        a.set_xlabel('Number of periods')
+        a.set_ylabel('Average Polarity')
         # a.plot(X, Y)
         # aggregate the figure f to the frame plot
         c = FigureCanvasTkAgg(f, self.plot_frame)
