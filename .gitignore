@@ -1,6 +1,9 @@
 # MAC
 *.DS_STORE
 
+# iCloud
+*.icloud
+
 # jupyter
 __pycache__/
 .ipynb_*
