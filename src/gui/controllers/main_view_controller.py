@@ -75,10 +75,17 @@ class MainViewController(Controller):
         end = time.mktime(datetime.datetime.strptime(end, "%Y-%m-%d").timetuple())
 
         # get data
-        data = self.model.segment_labels(period, start, end)
+        evaluations = self.model.segment_labels(period, start, end)
+
+        # truncate data_frame
+        i0 = 0
+        for i, e in enumerate(evaluations):
+            if e != -2:
+                i0 = i
+                break
 
         # plot data
-        self.view.plot_data(range(len(data)), data)
+        self.view.plot_data(range(len(evaluations) - i0), evaluations[i0:])
 
     def calendar_click(self, var):
         cd = CalendarDialog(self.view)

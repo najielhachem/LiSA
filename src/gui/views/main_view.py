@@ -167,12 +167,14 @@ class MainView(View):
         f = Figure(figsize=(5,4), dpi=100)
         a = f.add_subplot(111)
         # plot the figure
-        a.bar(X, Y)
+        a.plot(range(-1, Y.shape[0] + 1, 1),[0] * (Y.shape[0] + 2), 'r--')
+        a.bar(X, Y, 0.5)
+        a.set_ylim([-1.5, 1.5])
+        a.xaxis.set_ticks(range(Y.shape[0]))
         # legend for bar(s)
         # a.legend(['Test'])
-        a.set_xlabel('Number of periods')
-        a.set_ylabel('Average Polarity')
-        # a.plot(X, Y)
+        a.set_xlabel('Period')
+        a.set_ylabel('Average Period Polarity')
         # aggregate the figure f to the frame plot
         c = FigureCanvasTkAgg(f, self.plot_frame)
         c.get_tk_widget().grid(row=3, column=0, columnspan=3, sticky='es')
