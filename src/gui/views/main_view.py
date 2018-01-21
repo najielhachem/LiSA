@@ -96,7 +96,7 @@ class MainView(View):
         # Period Metric
         self.period_metric = tk.StringVar(frame)
         self.period_metric.set('hours')
-        opt_metric = tk.OptionMenu(frame, self.period_metric, "hours", "days", "months")
+        opt_metric = tk.OptionMenu(frame, self.period_metric, "seconds", "minutes", "hours", "days", "months")
         opt_metric.grid(row=1, column=2, sticky='e')
         # Plot Button
         btn_plot = tk.Button(frame, text='Plot',
@@ -167,10 +167,11 @@ class MainView(View):
         f = Figure(figsize=(5,4), dpi=100)
         a = f.add_subplot(111)
         # plot the figure
-        a.plot(range(-1, Y.shape[0] + 1, 1),[0] * (Y.shape[0] + 2), 'r--')
-        a.bar(X, Y, 0.5)
+
+        a.plot(X, [0] * X.shape[0], 'r--')
+        a.bar(X[1:-1], Y, 0.5)
         a.set_ylim([-1.5, 1.5])
-        a.xaxis.set_ticks(range(Y.shape[0]))
+        a.xaxis.set_ticks(X[1:-1])
         # legend for bar(s)
         # a.legend(['Test'])
         a.set_xlabel('Period')

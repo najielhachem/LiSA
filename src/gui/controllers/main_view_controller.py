@@ -2,6 +2,8 @@ from .controller import Controller
 from ..models.analyzer import Analyzer
 import data_processing.parser as parser
 
+import numpy as np
+
 import tkinter as tk
 import tkcalendar
 import tkinter.simpledialog as simpledialog
@@ -61,6 +63,8 @@ class MainViewController(Controller):
         # get data
         period = int(self.view.period_entry.get())
         metric = self.view.period_metric.get()
+        if metric == 'minutes':
+            period *= 60
         if metric == 'hours':
             period *= 3600
         if metric == 'days':
@@ -78,14 +82,17 @@ class MainViewController(Controller):
         evaluations = self.model.segment_labels(period, start, end)
 
         # truncate data_frame
-        i0 = 0
-        for i, e in enumerate(evaluations):
-            if e != -2:
+        n = evaluations.shape[0]
+        i0, i1 = -1, -1
+        for i in range(n):
+            if evaluations[i] != -2 and i0 == -1:
                 i0 = i
-                break
+            if evaluations[n - i - 1] != -2 and i1 == -1:
+                i1 = n - i
 
+        evaluations = evaluations[i0:i1]
         # plot data
-        self.view.plot_data(range(len(evaluations) - i0), evaluations[i0:])
+        self.view.plot_data(np.arange(i0 - 1, i1 + 1), evaluations)
 
     def calendar_click(self, var):
         cd = CalendarDialog(self.view)
