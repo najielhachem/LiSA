@@ -8,7 +8,6 @@ from matplotlib.figure import Figure
 from .view import View
 from ..controllers.main_view_controller import MainViewController
 
-
 class MainView(View):
 
     def __init__(self, parent):
@@ -22,6 +21,7 @@ class MainView(View):
         self.add_data_frame()
         # Setting Reusable Variables to None
         self.plot_frame = None
+        self.toolbar_frame = None
         self.message_box = None
 
     def init_window(self):
@@ -73,7 +73,7 @@ class MainView(View):
 
     def add_plot_frame(self):
         self.plot_frame = tk.Frame(self)
-        self.plot_frame.pack(fill='both', side='right', expand=1)
+        self.plot_frame.pack(fill='both', side='left', expand=1)
         # Frame title
         lbl_frame = tk.Label(self.plot_frame, text="Analyzer")
         lbl_frame.grid(row=0, column=1, columnspan=2, rowspan=1,
@@ -88,7 +88,7 @@ class MainView(View):
     def add_plot_form(self, frame):
         # Period Label
         lbl_period = tk.Label(frame, text='Period')
-        lbl_period.grid(row=1, column=0, sticky='w')
+        lbl_period.grid(row=1, column=0)
         # Period Entry
         self.period_entry = tk.Entry(frame)
         self.period_entry.insert('end', '10')
@@ -97,11 +97,11 @@ class MainView(View):
         self.period_metric = tk.StringVar(frame)
         self.period_metric.set('hours')
         opt_metric = tk.OptionMenu(frame, self.period_metric, "seconds", "minutes", "hours", "days", "months")
-        opt_metric.grid(row=1, column=2, sticky='e')
+        opt_metric.grid(row=1, column=2)
         # Plot Button
         btn_plot = tk.Button(frame, text='Plot',
                 command=self.controller.plot)
-        btn_plot.grid(row=2, column=1, columnspan=2)
+        btn_plot.grid(row=2, column=1, columnspan=2, stick='ew')
 
     def add_input_form(self, frame):
         # Subject Input
@@ -160,57 +160,38 @@ class MainView(View):
         else:
             self.message_box.config(text=msg)
 
-
     def plot_data(self, X, Y):
         #addint a subframe to draw a plot as i can add in the right other options or information
         #init a figure
-        f = Figure(figsize=(5,4), dpi=100)
-        a = f.add_subplot(111)
+        fig = Figure(figsize=(5,4), dpi=100)
+        ax = fig.add_subplot(111)
         # plot the figure
 
-        a.plot(X, [0] * X.shape[0], 'r--')
-        a.bar(X[1:-1], Y, 0.5)
-        a.set_ylim([-1.5, 1.5])
-        a.xaxis.set_ticks(X[1:-1])
+        ax.plot(X, [0] * X.shape[0], 'r--')
+        ax.bar(X[1:-1], Y, 0.5)
+        ax.set_ylim([-1.5, 1.5])
+        ax.xaxis.set_ticks(X[1:-1])
         # legend for bar(s)
-        # a.legend(['Test'])
-        a.set_xlabel('Period')
-        a.set_ylabel('Average Period Polarity')
-        # aggregate the figure f to the frame plot
-        c = FigureCanvasTkAgg(f, self.plot_frame)
-        c.get_tk_widget().grid(row=3, column=0, columnspan=3, sticky='es')
-        # adding the toolbar to the frame plot
-        # toolbar = NavigationToolbar2TkAgg(c, self.plot_frame)
-        # toolbar.update()
-        # c._tkcanvas.grid(row=4, column=1, columnspan=3, sticky='wes')
-        c.show()
+        # axe.legend(['Test'])
+        ax.set_xlabel('Period')
+        ax.set_ylabel('Average Period Polarity')
+        # setting values under cursor
 
-# root = Tk()
-# root.title('Lisa')
-# root['bg']='white'
-#
-#
-# # frame 1
-# inputFrame = Frame(root, borderwidth=2)
-# inputFrame.pack(side=TOP, padx=10, pady=10)
-#
-# for line, item in enumerate(['input', 'suject', 'Location']):
-#     l = Label(inputFrame, text=item, width=10)
-#     e = Entry(inputFrame, width=10)
-#     l.grid(row=line, column=0)
-#     e.grid(row=line, column=1)
-# Label(inputFrame, text='DatePicker', width=10).grid(row=1, column = 2)
-#
-# dp.Datepicker(inputFrame).grid(row = 0, column = 3)
-# dp.Datepicker(inputFrame).grid(row = 2, column = 3)
-#
-#
-# OptionFrame = Frame(root, borderwidth=2, relief=GROOVE)
-# OptionFrame.pack(side=TOP, padx=10, pady=10)
-#
-# PlotFrame = Frame(root, borderwidth=2, relief=GROOVE)
-# PlotFrame.pack(side=TOP, padx=10, pady=10)
-#
-#
-#
-# root.mainloop()
+        # aggregate the figure to the frame plot
+        canvas = FigureCanvasTkAgg(fig, self.plot_frame)
+        canvas.show()
+        canvas.get_tk_widget().grid(row=3, column=0, columnspan=3, sticky='en')
+        # adding the toolbar to the frame plot
+        if self.toolbar_frame is not None:
+            self.toolbar_frame.destroy()
+        self.toolbar_frame = tk.Frame(self.plot_frame)
+        self.toolbar_frame.grid(row=4, column=1, columnspan=3, rowspan=2, sticky='wn')
+        toolbar = NavigationToolbar(canvas, self.toolbar_frame)
+        toolbar.pack(side='left')
+        toolbar.update()
+
+
+class NavigationToolbar(NavigationToolbar2TkAgg):
+    # only display the buttons we need
+    toolitems = [t for t in NavigationToolbar2TkAgg.toolitems if
+                 t[0] in ('Home', 'Pan', 'Zoom', 'Save')]
