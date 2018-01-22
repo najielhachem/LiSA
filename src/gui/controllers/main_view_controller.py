@@ -10,6 +10,8 @@ import tkinter.simpledialog as simpledialog
 import data_processing.preprocessor as preprocessor
 import time, datetime
 
+from ..models.fetchThread import FuncThread
+
 class CalendarDialog(simpledialog.Dialog):
     """
     Dialog box that displays a calendar and returns the selected dat
@@ -31,7 +33,8 @@ class MainViewController(Controller):
     def init_model(self):
         self.model = Analyzer()
 
-    def fetch(self):
+
+    def fetchThread(self):
         self.view.add_message(self.view.data_frame, "Fetching tweets...")
         self.view.rm_plot_frame()
         self.view.update()
@@ -49,6 +52,13 @@ class MainViewController(Controller):
         text_message = "Tweets that match your requirements are downloaded and ready to be to be proceseed!\nTotal of {} tweets download".format(len(tweets))
         self.view.add_message(self.view.data_frame, text_message)
         self.view.btn_analyze.config(state='normal')
+
+    def fetch(self):
+        self.f = FuncThread(self.fetchThread)
+        self.f.start()
+
+    def cancel(self):
+        self.f = None
 
     def analyze(self):
         self.view.add_message(self.view.data_frame, "Analyzing tweets")
