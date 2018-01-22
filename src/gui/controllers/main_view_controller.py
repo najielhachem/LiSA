@@ -104,8 +104,13 @@ class MainViewController(Controller):
                 i1 = n - i
 
         evaluations = evaluations[i0:i1]
+        empty_idx = np.where(evaluations == -2)[0]
+        pos_idx = np.where(evaluations > 0)[0]
+        neg_idx = np.where((evaluations < 0) & (evaluations != -2))[0]
+        ticks = np.arange(i0, i1)
+
         # plot data
-        self.view.plot_data(np.arange(i0 - 1, i1 + 1), evaluations)
+        self.view.plot_data(pos_idx, neg_idx, empty_idx, evaluations, ticks)
 
     def calendar_click(self, var):
         cd = CalendarDialog(self.view)
