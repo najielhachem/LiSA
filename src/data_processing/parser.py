@@ -120,6 +120,13 @@ def read_json_folder(folder):
     return data
 
 def save_tweets_2_file(tweets, f):
+    """
+    writing tweets in a file f given
+
+    Params:
+        :tweets -- list(tweet) : list of the tweets
+        :f -- file :  file where to write tweets
+    """
     data = {}
     data['tweets'] =  [tweet.text for tweet in tweets]
     text2save =  json.dumps(data)
