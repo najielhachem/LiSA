@@ -119,6 +119,11 @@ def read_json_folder(folder):
             data +=  json.loads(Doc)
     return data
 
+def save_tweets_2_file(tweets, f):
+    data = {}
+    data['tweets'] =  [tweet.text for tweet in tweets]
+    text2save =  json.dumps(data)
+    f.write(text2save)
 
 def read_tweets(filename):
     """

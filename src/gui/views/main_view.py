@@ -158,6 +158,11 @@ class MainView(View):
         self.btn_save = tk.Checkbutton(subframe, text='Save after fetch', variable=self.save_check)
         self.btn_save.grid(row=1, column=0, columnspan=2, pady=(0,20))
 
+        # Add export Tweets Button
+        self.btn_export = tk.Button(subframe, text="Export Tweets",
+                command=self.controller.export)
+        self.btn_export.grid(row=1, column = 1, pady=(20,0))
+
         # Add Analyze Tweets Button
         self.btn_analyze = tk.Button(subframe, text="Analyze Tweets",
                 command=self.controller.analyze)

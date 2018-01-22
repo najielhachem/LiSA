@@ -1,7 +1,7 @@
 from .controller import Controller
 from ..models.analyzer import Analyzer
 import data_processing.parser as parser
-
+from tkinter import filedialog
 import numpy as np
 
 import tkinter as tk
@@ -50,6 +50,15 @@ class MainViewController(Controller):
         self.view.add_message(self.view.data_frame, text_message)
         self.view.btn_analyze.config(state='normal')
 
+    def export(self):
+        #check if something is fetched
+        if (self.model.get_tweets() == []):
+            self.fetch()
+        tweets = self.model.get_tweets()
+        #opend a dialog boxe
+        f = filedialog.asksaveasfile(mode='w', defaultextension=".json")
+        parser.save_tweets_2_file(tweets, f)
+        f.close()
     def analyze(self):
         self.view.add_message(self.view.data_frame, "Analyzing tweets")
         self.view.update()

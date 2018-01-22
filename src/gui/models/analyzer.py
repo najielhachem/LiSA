@@ -13,9 +13,12 @@ class Analyzer:
     def __init__(self, classifier = LinearSVC()):
         self.classifier = classifier
         self.vectorizer = None
+        self.tweets = []
 
     def set_tweets(self, tweets):
         self.tweets = tweets
+    def get_tweets(self):
+        return self.tweets
 
     def analyze(self):
         """ using defined classifier, value between 0 and 1
