@@ -168,14 +168,14 @@ class MainView(View):
     def add_message(self, frame, msg):
         if self.message_box is None:
             self.message_box = tk.Message(frame, text=msg, relief='raised', aspect=400, bd=5)
-            self.message_box.grid(row=6, column=0, columnspan=2, sticky='we', pady=10)
+            self.message_box.grid(row=6, column=0, columnspan=2, pady=10)
         else:
             self.message_box.config(text=msg)
 
     def plot_data(self, X, Y):
         #addint a subframe to draw a plot as i can add in the right other options or information
         #init a figure
-        fig = Figure(figsize=(3,4), dpi=100)
+        fig = Figure(figsize=(4,4), dpi=100)
         ax = fig.add_subplot(111)
         # plot the figure
 
@@ -204,5 +204,6 @@ class MainView(View):
 
 class NavigationToolbar(NavigationToolbar2TkAgg):
     # only display the buttons we need
-    toolitems = [t for t in NavigationToolbar2TkAgg.toolitems if
-                 t[0] in ('Home', 'Pan', 'Zoom', 'Save')]
+    toolitems = []
+    # [t for t in NavigationToolbar2TkAgg.toolitems if
+    #             t[0] in ('Home', 'Pan', 'Zoom', 'Save')]
