@@ -62,8 +62,8 @@ class MainView(View):
         return MainViewController(self)
 
     def add_data_frame(self):
-        self.data_frame = tk.Frame(self) #, background="red")
-        self.data_frame.grid(row=0, column=0, sticky='n', padx=10)
+        self.data_frame = tk.Frame(self)
+        self.data_frame.grid(row=0, column=0, sticky='ne', padx=10)
         # Frame title
         lbl_frame = tk.Label(self.data_frame, text="Fetcher")
         lbl_frame.grid(row=0, column=0, columnspan=2, pady=20)
@@ -71,8 +71,8 @@ class MainView(View):
         self.add_input_form(self.data_frame)
 
     def add_plot_frame(self):
-        self.plot_frame = tk.Frame(self) #, background="green")
-        self.plot_frame.grid(row=0, column=3, sticky='n', padx=10)
+        self.plot_frame = tk.Frame(self)
+        self.plot_frame.grid(row=0, column=3, padx=10, sticky='n')
         # Frame title
         lbl_frame = tk.Label(self.plot_frame, text="Analyzer")
         lbl_frame.grid(row=0, column=0, columnspan=3, pady=20)
@@ -86,7 +86,7 @@ class MainView(View):
     def add_plot_form(self, frame):
         # Period Label
         lbl_period = tk.Label(frame, text='Period')
-        lbl_period.grid(row=1, column=0)
+        lbl_period.grid(row=1, column=0, sticky='n')
         # Period Entry
         self.period_entry = tk.Entry(frame)
         self.period_entry.insert('end', '10')
@@ -99,26 +99,26 @@ class MainView(View):
         # Plot Button
         btn_plot = tk.Button(frame, text='Plot',
                 command=self.controller.plot)
-        btn_plot.grid(row=2, column=0, columnspan=3, stick='ew')
+        btn_plot.grid(row=2, column=1)
 
     def add_input_form(self, frame):
         # Subject Input
-        tk.Label(frame, text="Subject").grid(row=1, column=0)
+        tk.Label(frame, text="Subject").grid(row=1, column=0, sticky='w')
         self.subject = tk.Entry(frame)
         self.subject.insert('end', 'Trump')
-        self.subject.grid(row=1, column=1, sticky='we')
+        self.subject.grid(row=1, column=1)
 
         # Location Input
-        tk.Label(frame, text="Location").grid(row=2, column=0)
+        tk.Label(frame, text="Location").grid(row=2, column=0, sticky='w')
         self.location = tk.Entry(frame)
         self.location.insert('end', 'Paris')
-        self.location.grid(row=2, column=1, sticky='we')
+        self.location.grid(row=2, column=1)
 
         # Number of Tweets Input
-        tk.Label(frame, text="Nb Tweets").grid(row=3, column=0)
+        tk.Label(frame, text="Nb Tweets").grid(row=3, column=0, sticky='w')
         self.limit = tk.Entry(frame)
-        self.limit.insert('end', '100')
-        self.limit.grid(row=3, column=1, sticky='we')
+        self.limit.insert('end', '10')
+        self.limit.grid(row=3, column=1)
 
         # Start date interval
         number_days_offset = 7
@@ -167,15 +167,15 @@ class MainView(View):
 
     def add_message(self, frame, msg):
         if self.message_box is None:
-            self.message_box = tk.Message(frame, text=msg, relief='raised', aspect=400, bd=5)
-            self.message_box.grid(row=6, column=0, columnspan=2, sticky='we', pady=10)
+            self.message_box = tk.Message(frame, text=msg, relief='raised', aspect=400, bd=5, width=250)
+            self.message_box.grid(row=6, column=0, columnspan=2, pady=10)
         else:
             self.message_box.config(text=msg)
 
     def plot_data(self, X, Y):
         #addint a subframe to draw a plot as i can add in the right other options or information
         #init a figure
-        fig = Figure(figsize=(3,4), dpi=100)
+        fig = Figure(figsize=(4,4), dpi=80)
         ax = fig.add_subplot(111)
         # plot the figure
 
@@ -192,17 +192,18 @@ class MainView(View):
         # aggregate the figure to the frame plot
         canvas = FigureCanvasTkAgg(fig, self.plot_frame)
         canvas.show()
-        canvas.get_tk_widget().grid(row=3, column=0, columnspan=3, sticky='en')
+        canvas.get_tk_widget().grid(row=3, column=0, columnspan=3)
         # adding the toolbar to the frame plot
         if self.toolbar_frame is not None:
             self.toolbar_frame.destroy()
         self.toolbar_frame = tk.Frame(self.plot_frame)
-        self.toolbar_frame.grid(row=4, column=0, columnspan=3, rowspan=2, sticky='wn')
+        self.toolbar_frame.grid(row=4, column=0, columnspan=3, rowspan=2)
         toolbar = NavigationToolbar(canvas, self.toolbar_frame)
         toolbar.pack(side='left')
         toolbar.update()
 
 class NavigationToolbar(NavigationToolbar2TkAgg):
     # only display the buttons we need
-    toolitems = [t for t in NavigationToolbar2TkAgg.toolitems if
-                 t[0] in ('Home', 'Pan', 'Zoom', 'Save')]
+    toolitems = []
+    # toolitems = [t for t in NavigationToolbar2TkAgg.toolitems if
+    #              t[0] in ('Home', 'Pan', 'Zoom')]
