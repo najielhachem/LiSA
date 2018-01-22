@@ -66,6 +66,9 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
         None
     """
 
+    filename = 'save/' + filename
+    if not(os.path.isdir('save')):
+        os.makedirs('save')
     # Remove file with same filename if exists
     try:
         os.remove(filename)
@@ -74,14 +77,18 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
             raise
 
     # fetch tweets and add them to dic
-    query = get_query_str(subject, since, until, near, limit)
-    data = {'query' : query, 'tweets': []}
-    for tweet in query_tweets(query, limit):
-        data['tweets'].append(tweet.text)
+    query_tweets = fetch_tweets(subject, since, until, near, limit)
+    data = {}
+    data['query'] = get_query_str(subject, since, until, near, limit)
+    tweets = []
+    for tweet in query_tweets:
+        tweets.append(tweet.text)
+    data['tweets'] = tweets
     # save tweets into file as json
     file = open(filename, 'w')
     file.write(json.dumps(data))
     file.close()
+    return query_tweets
 
 def read_json(filename):
     """

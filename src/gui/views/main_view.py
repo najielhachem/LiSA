@@ -62,22 +62,20 @@ class MainView(View):
         return MainViewController(self)
 
     def add_data_frame(self):
-        self.data_frame = tk.Frame(self)
-        self.data_frame.pack(fill='both', side='left', expand=1)
+        self.data_frame = tk.Frame(self) #, background="red")
+        self.data_frame.grid(row=0, column=0, sticky='n', padx=10)
         # Frame title
         lbl_frame = tk.Label(self.data_frame, text="Fetcher")
-        lbl_frame.grid(row=0, column=1, columnspan=2, rowspan=1,
-               padx=5, pady=5)
+        lbl_frame.grid(row=0, column=0, columnspan=2, pady=20)
         lbl_frame.config(font=("Courier", 20))
         self.add_input_form(self.data_frame)
 
     def add_plot_frame(self):
-        self.plot_frame = tk.Frame(self)
-        self.plot_frame.pack(fill='both', side='left', expand=1)
+        self.plot_frame = tk.Frame(self) #, background="green")
+        self.plot_frame.grid(row=0, column=3, sticky='n', padx=10)
         # Frame title
         lbl_frame = tk.Label(self.plot_frame, text="Analyzer")
-        lbl_frame.grid(row=0, column=1, columnspan=2, rowspan=1,
-               padx=5, pady=5)
+        lbl_frame.grid(row=0, column=0, columnspan=3, pady=20)
         lbl_frame.config(font=("Courier", 20))
         self.add_plot_form(self.plot_frame)
 
@@ -101,26 +99,26 @@ class MainView(View):
         # Plot Button
         btn_plot = tk.Button(frame, text='Plot',
                 command=self.controller.plot)
-        btn_plot.grid(row=2, column=1, columnspan=2, stick='ew')
+        btn_plot.grid(row=2, column=0, columnspan=3, stick='ew')
 
     def add_input_form(self, frame):
         # Subject Input
         tk.Label(frame, text="Subject").grid(row=1, column=0)
         self.subject = tk.Entry(frame)
         self.subject.insert('end', 'Trump')
-        self.subject.grid(row=1, column=1)
+        self.subject.grid(row=1, column=1, sticky='we')
 
         # Location Input
         tk.Label(frame, text="Location").grid(row=2, column=0)
         self.location = tk.Entry(frame)
         self.location.insert('end', 'Paris')
-        self.location.grid(row=2, column=1)
+        self.location.grid(row=2, column=1, sticky='we')
 
         # Number of Tweets Input
         tk.Label(frame, text="Nb Tweets").grid(row=3, column=0)
         self.limit = tk.Entry(frame)
         self.limit.insert('end', '100')
-        self.limit.grid(row=3, column=1)
+        self.limit.grid(row=3, column=1, sticky='we')
 
         # Start date interval
         number_days_offset = 7
@@ -128,42 +126,56 @@ class MainView(View):
         now = datetime.datetime.now()
         begin = now - datetime.timedelta(days=number_days_offset)
 
+        date_frame = tk.Frame(frame)
+        date_frame.grid(row=4, column=0, columnspan=2)
         # Start Date Input
-        tk.Label(frame, text="From").grid(row=1, column=2)
+        tk.Label(date_frame, text="From").grid(row=0, column=0)
         self.date_start = tk.StringVar(value=str(begin.year) + "-" + str(begin.month) + "-" + str(begin.day))
-        btn_start = tk.Button(frame, textvariable=self.date_start,
+        btn_start = tk.Button(date_frame, textvariable=self.date_start,
                 command=lambda:self.controller.calendar_click(self.date_start))
-        btn_start.grid(row=1, column=3)
+        btn_start.grid(row=0, column=1)
 
         # End Date Input
-        tk.Label(frame, text="To").grid(row=2, column=2)
+        tk.Label(date_frame, text="To").grid(row=0, column=2)
         self.date_end = tk.StringVar(value=str(now.year) + "-" + str(now.month) + "-" + str(now.day))
-        btn_end = tk.Button(frame, textvariable=self.date_end,
+        btn_end = tk.Button(date_frame, textvariable=self.date_end,
                 command=lambda:self.controller.calendar_click(self.date_end))
-        btn_end.grid(row=2, column=3)
+        btn_end.grid(row=0, column=3)
 
+        subframe = tk.Frame(frame)
+        subframe.grid(row=5, column=0, columnspan=2)
         # Add Fetch Tweets Button
-        self.btn_fetch = tk.Button(frame, text="Fetch Tweets",
+        self.btn_fetch = tk.Button(subframe, text="Fetch Tweets",
                 command=self.controller.fetch)
-        self.btn_fetch.grid(row=4, column=1)
+        self.btn_fetch.grid(row=0, column=0, pady=(20,0))
+
+        # Add Load Tweets Button
+        self.btn_load = tk.Button(subframe, text="Load Tweets")
+        self.btn_load.grid(row=0, column=1, pady=(20,0))
+
+        # Add Save Tweets Check Box
+        self.save_check = tk.IntVar()
+        self.btn_save = tk.Checkbutton(subframe, text='Save after fetch', variable=self.save_check)
+        self.btn_save.grid(row=1, column=0, columnspan=2, pady=(0,20))
+
         # Add Analyze Tweets Button
-        self.btn_analyze = tk.Button(frame, text="Analyze Tweets",
+        self.btn_analyze = tk.Button(subframe, text="Analyze Tweets",
                 command=self.controller.analyze)
-        self.btn_analyze.grid(row=5, column = 1)
+        self.btn_analyze.grid(row=3, column=0, columnspan=2)
         self.btn_analyze.config(state='disabled')
 
 
     def add_message(self, frame, msg):
         if self.message_box is None:
             self.message_box = tk.Message(frame, text=msg, relief='raised', aspect=400, bd=5)
-            self.message_box.grid(row=6, column=0, columnspan=10, sticky='we', pady=10)
+            self.message_box.grid(row=6, column=0, columnspan=2, sticky='we', pady=10)
         else:
             self.message_box.config(text=msg)
 
     def plot_data(self, X, Y):
         #addint a subframe to draw a plot as i can add in the right other options or information
         #init a figure
-        fig = Figure(figsize=(5,4), dpi=100)
+        fig = Figure(figsize=(3,4), dpi=100)
         ax = fig.add_subplot(111)
         # plot the figure
 
@@ -185,11 +197,10 @@ class MainView(View):
         if self.toolbar_frame is not None:
             self.toolbar_frame.destroy()
         self.toolbar_frame = tk.Frame(self.plot_frame)
-        self.toolbar_frame.grid(row=4, column=1, columnspan=3, rowspan=2, sticky='wn')
+        self.toolbar_frame.grid(row=4, column=0, columnspan=3, rowspan=2, sticky='wn')
         toolbar = NavigationToolbar(canvas, self.toolbar_frame)
         toolbar.pack(side='left')
         toolbar.update()
-
 
 class NavigationToolbar(NavigationToolbar2TkAgg):
     # only display the buttons we need
