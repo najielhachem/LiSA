@@ -66,9 +66,12 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
         None
     """
 
-    filename = 'save/' + filename
-    if not(os.path.isdir('save')):
-        os.makedirs('save')
+    subject = subject.lower()
+    if near is not None:
+        near = near.lower()
+    filename = '.cache/' + subject + '_' + near + '.json'
+    if not(os.path.isdir('.cache')):
+        os.makedirs('.cache/')
     # Remove file with same filename if exists
     try:
         os.remove(filename)
@@ -76,13 +79,27 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
         if e.errno != errno.ENOENT: # errno.ENOENT = no such file or directory
             raise
 
+    # main JSON to save in cache
+    data = {}
+
+    # save query into JSON
+    query = {}
+    query['subject'] = subject
+    query['near'] = near
+    query['since'] = since
+    query['until'] = until
+    query['limit'] = limit
+    # add JSON query to main JSON
+    data['query'] = query
+
     # fetch tweets and add them to dic
     query_tweets = fetch_tweets(subject, since, until, near, limit)
-    data = {}
-    data['query'] = get_query_str(subject, since, until, near, limit)
     tweets = []
     for tweet in query_tweets:
-        tweets.append(tweet.text)
+        t = {}
+        t['text'] = tweet.text
+        t['timestamp'] = str(tweet.timestamp)
+        tweets.append(t)
     data['tweets'] = tweets
     # save tweets into file as json
     file = open(filename, 'w')

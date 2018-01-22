@@ -177,21 +177,21 @@ class MainView(View):
         else:
             self.message_box.config(text=msg)
 
-    def plot_data(self, X, Y):
+    def plot_data(self, pos_idx, neg_idx, empty_idx, evaluations, ticks):
         #addint a subframe to draw a plot as i can add in the right other options or information
         #init a figure
         fig = Figure(figsize=(4,4), dpi=80)
         ax = fig.add_subplot(111)
         # plot the figure
-
-        ax.plot(X, [0] * X.shape[0], 'r--')
-        ax.bar(X[1:-1], Y, 0.5)
+        ax.axhline(c='c', ls='-')
+        ax.plot(empty_idx + ticks[0], [0] * empty_idx.shape[0], 'kX', label = 'Empty')
+        ax.bar(pos_idx + ticks[0], evaluations[pos_idx], color='g', label = 'Positive')
+        ax.bar(neg_idx + ticks[0], evaluations[neg_idx], color='r', label = 'Negative')
         ax.set_ylim([-1.5, 1.5])
-        ax.xaxis.set_ticks(X[1:-1])
-        # legend for bar(s)
-        # axe.legend(['Test'])
+        # ax.xaxis.set_ticks(ticks)
         ax.set_xlabel('Period')
         ax.set_ylabel('Average Period Polarity')
+        # ax.legend()
         # setting values under cursor
 
         # aggregate the figure to the frame plot
@@ -202,13 +202,12 @@ class MainView(View):
         if self.toolbar_frame is not None:
             self.toolbar_frame.destroy()
         self.toolbar_frame = tk.Frame(self.plot_frame)
-        self.toolbar_frame.grid(row=4, column=0, columnspan=3, rowspan=2)
+        self.toolbar_frame.grid(row=4, column=0, columnspan=3, rowspan=2, sticky='w')
         toolbar = NavigationToolbar(canvas, self.toolbar_frame)
         toolbar.pack(side='left')
         toolbar.update()
 
 class NavigationToolbar(NavigationToolbar2TkAgg):
     # only display the buttons we need
-    toolitems = []
-    # toolitems = [t for t in NavigationToolbar2TkAgg.toolitems if
-    #              t[0] in ('Home', 'Pan', 'Zoom')]
+    toolitems = [t for t in NavigationToolbar2TkAgg.toolitems if
+                 t[0] in ('Home', 'Pan', 'Zoom')]
