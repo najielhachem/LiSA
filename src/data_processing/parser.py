@@ -5,7 +5,7 @@ try:
 except ImportError:
     import simplejson as json
 
-from twitterscraper import query_tweets
+from twitterscraper import query_tweets, Tweet
 import datetime
 import numpy as np
 
@@ -73,6 +73,7 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
         None
     """
 
+    date_format = '%Y-%m-%d'
     subject = subject.lower()
     limit = int(limit)
     if near is not None:
@@ -81,8 +82,8 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
     if not(os.path.isdir('.cache')):
         os.makedirs('.cache/')
 
-    since_date = datetime.datetime.strptime(since, '%Y-%m-%d')
-    until_date = datetime.datetime.strptime(until, '%Y-%m-%d')
+    since_date = datetime.datetime.strptime(since, date_format)
+    until_date = datetime.datetime.strptime(until, date_format)
     if since_date > until_date :
        tmp_date = since_date
        since_date = until_date
@@ -109,9 +110,9 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
         json_file = open(filename, 'r')
         json_data = json.load(json_file)
         since2 = json_data['query']['since']
-        since_date2 = datetime.datetime.strptime(since2, '%Y-%m-%d')
+        since_date2 = datetime.datetime.strptime(since2, date_format)
         until2 = json_data['query']['until']
-        until_date2 = datetime.datetime.strptime(until2, '%Y-%m-%d')
+        until_date2 = datetime.datetime.strptime(until2, date_format)
 
         json_tweets = json_data['tweets']
         json_tweets.reverse()
@@ -126,7 +127,8 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
                     break
                 if date_time < until_date :
                     if count < limit :
-                        tweets.append(tweet)
+                        t = Tweet(timestamp=date_time, text=tweet['text'], user='', fullname='', id='', url='', replies='', retweets='', likes='')
+                        tweets.append(t)
                         count += 1
                     else :
                         do_fetch = False
@@ -151,16 +153,16 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
                 until_date_double += datetime.timedelta(days=-1)
                 since_date1 = until_date2
                 since_date1 += datetime.timedelta(days=1)
-                since_json = since_date_double.strftime('%Y-%m-%d')
-                until_json = until_date1.strftime('%Y-%m-%d')
+                since_json = since_date_double.strftime(date_format)
+                until_json = until_date1.strftime(date_format)
 
     if until_date1 < since_date1 :
         do_fetch = False
         print('- Unnecessary to fetch -')
         return tweets
 
-    since = since_date1.strftime('%Y-%m-%d')
-    until = until_date1.strftime('%Y-%m-%d')
+    since = since_date1.strftime(date_format)
+    until = until_date1.strftime(date_format)
 
     #try:
     #    os.remove(filename)
@@ -187,6 +189,7 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
         t = {}
         t['text'] = tweet.text
         t['timestamp'] = str(tweet.timestamp)
+        tweets.append(tweet)
         fetched_tweets.append(t)
     if not tweets :
         to_save.extend(fetched_tweets)
@@ -194,7 +197,6 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
     else :
         to_save.extend(json_tweets)
         to_save.extend(fetched_tweets)
-    tweets.extend(fetched_tweets)
     if between :
         count = len(tweets)
         i = 0
@@ -205,7 +207,8 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
                 break
             if date_time < until_date :
                 if count < limit :
-                    tweets.append(tweet)
+                    t = Tweet(timestamp=date_time, text=tweet['text'], user='', fullname='', id='', url='', replies='', retweets='', likes='')
+                    tweets.append(t)
                     count += 1
                     i += 1
                 else :
@@ -214,24 +217,26 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
     if since_date_double is not None :
         count = len(tweets)
         to_add = limit - count
-        count_json = len(json_tweets)
-        if to_add - count_json < 0 :
-            tweets.extend(json_tweets[:to_add])
-            limit = limit - to_add
-            print('(2) Loaded ' + str(to_add) + ' tweets from cache')
-        else :
-            tweets.extend(json_tweets)
-            limit = limit - count_json
-            print('(3) Loaded ' + str(count_json) + ' tweets from cache')
+        i = 0
+        for tweet in json_tweets :
+            if i < to_add :
+                timestamp = tweet['timestamp']
+                date_time = datetime.datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
+                t = Tweet(timestamp=date_time, text=tweet['text'], user='', fullname='', id='', url='', replies='', retweets='', likes='')
+                tweets.append(t)
+                i += 1
+            else :
+                break
+        print('(2) Loaded ' + str(i) + ' tweets from cache')
 
-        query_tweets = fetch_tweets(subject, since_date_double.strftime('%Y-%m-%d'), until_date_double.strftime('%Y-%m-%d'), near, limit)
+        query_tweets = fetch_tweets(subject, since_date_double.strftime(date_format), until_date_double.strftime(date_format), near, limit)
         query_tweets.reverse()
         print('(2) Downloaded ' + str(len(query_tweets)) + ' new tweets')
         for tweet in query_tweets:
             t = {}
             t['text'] = tweet.text
             t['timestamp'] = str(tweet.timestamp)
-            tweets.append(t)
+            tweets.append(tweet)
             to_save.append(t)
 
     to_save.reverse()
