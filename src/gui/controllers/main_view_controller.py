@@ -1,5 +1,6 @@
 from .controller import Controller
 from ..models.analyzer import Analyzer
+import gui.models.classifiers as classifier
 import data_processing.parser as parser
 from tkinter import filedialog
 import numpy as np
@@ -29,10 +30,9 @@ class MainViewController(Controller):
         self.view = view
         self.init_model()
 
-
-    def init_model(self):
-        self.model = Analyzer()
-
+    def init_model(self, clfname = "SVM"):
+        clf = classifier.get_classifiers()[clfname]
+        self.model = Analyzer(clf)
 
     def fetchThread(self):
         self.view.add_message(self.view.data_frame, "Fetching tweets...")

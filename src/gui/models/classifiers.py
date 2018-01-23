@@ -138,7 +138,6 @@ class LinearSVC(Classifier):
             random_state (float): The seed of the pseudo random number generator
                 to use when shuffling the data (see sklearn documentation)
         """
-
         self.name = "SVM"
         self.classifier = skl_svm.LinearSVC(random_state=random_state)
 
@@ -149,7 +148,7 @@ class LinearSVC(Classifier):
         return self.classifier.predict(data_test)
 def get_classifiers():
     clf1 = LinearSVC()
-    clf2 = Ridge()
+    clf2 = LogisticRegression()
     clf3 = MultinomialNB()
     clfs = [clf1, clf2, clf3]
     dic_clfs = {}
