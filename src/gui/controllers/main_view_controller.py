@@ -76,6 +76,7 @@ class MainViewController(Controller):
     def fetch(self):
         self.f = FuncThread(self.fetchThread)
         self.f.start()
+        self.view.addProgressBar()
 
     def cancel(self):
         self.f = None

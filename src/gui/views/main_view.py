@@ -177,6 +177,11 @@ class MainView(View):
         self.btn_analyze.config(state='disabled')
 
 
+    def addProgressBar(self):
+        #self.progress_bar = bar
+        #self.grid(row=0, column=2)
+        pass
+
     def add_message(self, frame, msg):
         if self.message_box is None:
             self.message_box = tk.Message(frame, text=msg, relief='raised', aspect=400, bd=5, width=250)
