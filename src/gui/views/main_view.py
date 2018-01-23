@@ -88,9 +88,9 @@ class MainView(View):
     def add_plot_frame(self, frame):
         # Period Label
         self.plot_frame = tk.Frame(frame, bd=10, relief='raised')
-        self.plot_frame.grid(row=1, column=0, columnspan=3)
+        self.plot_frame.grid(row=1, column=0, columnspan=3, ipadx=5, ipady=5)
         lbl_period = tk.Label(self.plot_frame, text='Period')
-        lbl_period.grid(row=1, column=0, sticky='w')
+        lbl_period.grid(row=1, column=0, padx=(10, 0))
         
         # Period Entry
         self.period_entry = tk.Entry(self.plot_frame)
@@ -107,26 +107,26 @@ class MainView(View):
         # Plot Button
         btn_plot = tk.Button(self.plot_frame, text='Plot',
                 command=self.controller.plot)
-        btn_plot.grid(row=2, column=1)
+        btn_plot.grid(row=2, column=2, sticky='we')
 
     def add_input_form(self, frame):
         input_frame = tk.Frame(frame, bd=10, relief='sunken')
-        input_frame.grid(row=1, column=0, columnspan=2, ipadx=5) 
+        input_frame.grid(row=1, column=0, columnspan=2, ipadx=5, ipady=5) 
 
         # Subject Input
-        tk.Label(input_frame, text="Subject").grid(row=1, column=0, sticky='w')
+        tk.Label(input_frame, text="Subject").grid(row=1, column=0, pady=(10,0))
         self.subject = tk.Entry(input_frame)
         self.subject.insert('end', 'Trump')
-        self.subject.grid(row=1, column=1)
+        self.subject.grid(row=1, column=1, pady=(10,0))
 
         # Location Input
-        tk.Label(input_frame, text="Location").grid(row=2, column=0, sticky='w')
+        tk.Label(input_frame, text="Location").grid(row=2, column=0)
         self.location = tk.Entry(input_frame)
         self.location.insert('end', 'Paris')
         self.location.grid(row=2, column=1)
 
         # Number of Tweets Input
-        tk.Label(input_frame, text="Nb Tweets").grid(row=3, column=0, sticky='w')
+        tk.Label(input_frame, text="Nb Tweets").grid(row=3, column=0)
         self.limit = tk.Entry(input_frame)
         self.limit.insert('end', '10')
         self.limit.grid(row=3, column=1)
@@ -138,7 +138,7 @@ class MainView(View):
         begin = now - datetime.timedelta(days=number_days_offset)
 
         # Start Date Input
-        tk.Label(input_frame, text="From").grid(row=4, column=0, sticky='w')
+        tk.Label(input_frame, text="From").grid(row=4, column=0)
         self.date_start = tk.StringVar(value = str(begin.year) + "-" 
                 + str(begin.month) + "-" + str(begin.day))
         btn_start = tk.Button(input_frame, textvariable=self.date_start,
@@ -146,7 +146,7 @@ class MainView(View):
         btn_start.grid(row=4, column=1, sticky='we')
 
         # End Date Input
-        tk.Label(input_frame, text="To").grid(row=5, column=0, sticky='w')
+        tk.Label(input_frame, text="To").grid(row=5, column=0)
         self.date_end = tk.StringVar(value=str(now.year) + "-" 
                 + str(now.month) + "-" + str(now.day))
         btn_end = tk.Button(input_frame, textvariable=self.date_end,
@@ -159,27 +159,26 @@ class MainView(View):
         
         # Buttons subframe
         btn_frame = tk.Frame(frame, bd=10, relief='sunken') 
-        btn_frame.grid(row=3, column=0, columnspan=2)
+        btn_frame.grid(row=3, column=0, columnspan=2, ipadx=5, ipady=5)
 
         # Add Fetch Tweets Button
         self.btn_fetch = tk.Button(btn_frame, text="Fetch Tweets",
                 command=self.controller.fetch)
-        self.btn_fetch.grid(row=0, column=0)
+        self.btn_fetch.grid(row=0, column=0, sticky='e', pady=(10,0), padx=(10, 0))
 
         # Add Cancel Fetch Tweets Button
         self.btn_fetch = tk.Button(btn_frame, text="Cancel Fetch",
                 command=self.controller.cancel)
-        self.btn_fetch.grid(row=0, column=1)
-
+        self.btn_fetch.grid(row=0, column=1, sticky='w', pady=(10,0))
 
         # Add Load Tweets Button
         self.btn_load = tk.Button(btn_frame, text="Load Tweets")
-        self.btn_load.grid(row=1, column=0)
+        self.btn_load.grid(row=1, column=0, sticky='e')
 
         # Add export Tweets Button
         self.btn_export = tk.Button(btn_frame, text="Save Tweets",
                 command=self.controller.export)
-        self.btn_export.grid(row=1, column = 1)
+        self.btn_export.grid(row=1, column = 1, sticky='w')
 
         # Add choose classifier Button
         self.btn_choose_clf = tk.Button(btn_frame, text="Advanced",
