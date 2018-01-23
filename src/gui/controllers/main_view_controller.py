@@ -60,8 +60,9 @@ class MainViewController(Controller):
         tweets = self.model.get_tweets()
         #opend a dialog boxe
         f = filedialog.asksaveasfile(mode='w', defaultextension=".json")
-        parser.save_tweets_2_file(tweets, f)
-        f.close()
+        if not(f == None):
+            parser.save_tweets_2_file(tweets, f)
+            f.close()
 
     def fetch(self):
         self.f = FuncThread(self.fetchThread)
