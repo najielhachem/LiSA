@@ -236,15 +236,9 @@ class MainView(View):
         if neg_idx.shape[0] != 0:
             handles.append(neg[0])
             labels.append("Negative")
-<<<<<<< HEAD
-#        ax.legend(handles, labels, loc='best')
-        ax.legend(handles, labels, bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
-           ncol=3, mode="expand", borderaxespad=0.)
-=======
         ax.legend(handles, labels, bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
            ncol=3, mode="expand", borderaxespad=0.)
 
->>>>>>> 9b8071737e04557c3bffd6edc53bc0639966c7d2
         # setting values under cursor
         def __format_coord(x, y):
             col = int(x+0.5)
