@@ -150,17 +150,23 @@ class MainView(View):
                 command=self.controller.fetch)
         self.btn_fetch.grid(row=0, column=0, pady=(20,0))
 
+        # Add Cancel Fetch Tweets Button
+        self.btn_fetch = tk.Button(subframe, text="Cancel",
+                command=self.controller.cancel)
+        self.btn_fetch.grid(row=0, column=1, pady=(20,0))
+
+
         # Add Load Tweets Button
         self.btn_load = tk.Button(subframe, text="Load Tweets")
-        self.btn_load.grid(row=0, column=1, pady=(20,0))
+        self.btn_load.grid(row=1, column=0, pady=(20,0))
 
         # Add Save Tweets Check Box
-        self.save_check = tk.IntVar()
-        self.btn_save = tk.Checkbutton(subframe, text='Save after fetch', variable=self.save_check)
-        self.btn_save.grid(row=1, column=0, columnspan=2, pady=(0,20))
+        # self.save_check = tk.IntVar()
+        # self.btn_save = tk.Checkbutton(subframe, text='Save after fetch', variable=self.save_check)
+        # self.btn_save.grid(row=1, column=0, columnspan=2, pady=(0,20))
 
         # Add export Tweets Button
-        self.btn_export = tk.Button(subframe, text="Export Tweets",
+        self.btn_export = tk.Button(subframe, text="Save Tweets",
                 command=self.controller.export)
         self.btn_export.grid(row=1, column = 1, pady=(20,0))
 
