@@ -9,6 +9,8 @@ from matplotlib.figure import Figure
 from matplotlib import pyplot as plt
 from .view import View
 from ..controllers.main_view_controller import MainViewController
+from tkinter.ttk import Progressbar
+from tkinter import HORIZONTAL
 
 class MainView(View):
 
@@ -193,10 +195,9 @@ class MainView(View):
         self.btn_analyze.config(state='disabled')
 
 
-    def addProgressBar(self):
-        #self.progress_bar = bar
-        #self.grid(row=0, column=2)
-        pass
+    def addProgressBar(self, frame):
+        self.progress_bar = Progressbar(self, orient=HORIZONTAL, length=100,  mode='determinate')
+        self.progress_bar.grid(columnspan=4)
 
     def add_message(self, frame, msg):
         if self.message_box is None:

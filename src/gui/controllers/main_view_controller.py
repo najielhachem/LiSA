@@ -10,6 +10,7 @@ import tkcalendar
 import tkinter.simpledialog as simpledialog
 import data_processing.preprocessor as preprocessor
 import time, datetime
+import time
 
 from ..models.fetchThread import FuncThread
 
@@ -62,10 +63,24 @@ class MainViewController(Controller):
             parser.save_tweets_2_file(tweets, f)
             f.close()
 
+    def majProgressBarThread(self):
+        self.view.progress_bar["value"] = 20
+        time.sleep(1)
+        self.view.progress_bar["value"] = 40
+        time.sleep(1)
+        self.view.progress_bar["value"] = 60
+        time.sleep(1)
+        self.view.progress_bar["value"] = 80
+        time.sleep(1)
+        self.view.progress_bar["value"] = 100
+
+
     def fetch(self):
-        self.f = FuncThread(self.fetchThread)
-        self.f.start()
-        self.view.addProgressBar()
+        self.fetch_thread = FuncThread(self.fetchThread)
+        self.fetch_thread.start()
+        self.view.addProgressBar(self.view.data_frame)
+        self.thread_progress_bar = FuncThread(self.majProgressBarThread)
+        self.thread_progress_bar.start()
 
     def cancel(self):
         self.f = None
