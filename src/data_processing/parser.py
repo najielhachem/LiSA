@@ -9,9 +9,32 @@ from twitterscraper import query_tweets, Tweet
 import datetime
 import numpy as np
 
-def check_cache(directory):
-    size = sum(os.path.getsize(f) for f in os.listdir(directory) if os.path.isfile(f))
-    print(size)
+def check_cache(filename, directory, max_size_bytes):
+    size = 0
+    filenames = os.listdir(directory)
+    for f in filenames :
+        f = directory + '/' + f
+        if os.path.isfile(f) :
+            s = os.path.getsize(f)
+            size += s
+    print('Cache size : ' + str(size) + ' bytes (max : ' + str(max_size_bytes) + ' bytes)')
+    if size > max_size_bytes :
+        delta = size - max_size_bytes
+        cleaned = 0
+        for f in sorted(filenames, key=lambda f: os.path.getmtime(directory + '/' + f)) :
+            f = directory + '/' + f
+            if f != filename :
+                file_time = os.path.getmtime(f)
+                file_size = os.path.getsize(f)
+                try:
+                    os.remove(f)
+                    cleaned += file_size
+                    if cleaned >= delta :
+                        print(str(cleaned) + ' bytes cleaned')
+                        break
+                except OSError as e:
+                    print(e)
+    print()
 
 def get_query_str(subject, since, until, near = None, limit = None):
     """
@@ -77,7 +100,7 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
         None
     """
     
-    check_cache('.cache')
+    print()
     date_format = '%Y-%m-%d'
     subject = subject.lower()
     limit = int(limit)
@@ -86,6 +109,7 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
     filename = '.cache/' + subject + '_' + near + '.json'
     if not(os.path.isdir('.cache')):
         os.makedirs('.cache/')
+    check_cache(filename, '.cache', 1000000000)
 
     since_date = datetime.datetime.strptime(since, date_format)
     until_date = datetime.datetime.strptime(until, date_format)
@@ -181,12 +205,6 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
 
     since = since_date1.strftime(date_format)
     until = until_date1.strftime(date_format)
-
-    #try:
-    #    os.remove(filename)
-    #except OSError as e:
-    #    if e.errno != errno.ENOENT: # errno.ENOENT = no such file or directory
-    #        raise
 
     # save query into JSON
     query = {}
