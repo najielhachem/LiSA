@@ -263,21 +263,6 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
 
     return tweets
 
-def read_json(filename):
-    """
-    Reads a json file and returns data as a dictionary
-
-    Params:
-        :filename -- str: file path to read from
-
-    Return:
-        :data -- dict: dictionary representing data in file
-    """
-
-    with open(filename) as file:
-        lines = file.readlines()[0]
-        data = json.loads(lines)
-    return data
 def read_json_folder(folder):
     """
     Reads a directory containing json files and returns data as a dictionary
@@ -316,5 +301,5 @@ def read_tweets(filename):
         :tweets -- np.array: array containing all tweets in file
     """
 
-    data = read_json(filename)
+    data = json.load(filename)
     return np.array(data['tweets'])
