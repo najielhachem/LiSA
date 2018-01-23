@@ -83,8 +83,17 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
 
     since_date = datetime.datetime.strptime(since, '%Y-%m-%d')
     until_date = datetime.datetime.strptime(until, '%Y-%m-%d')
+    if since_date > until_date :
+       tmp_date = since_date
+       since_date = until_date
+       until_date = tmp_date
+       tmp = since
+       since = until
+       until = tmp
     since_date1 = since_date
     until_date1 = until_date
+    since_date_double = None
+    until_date_double = None
 
     since_json = since
     until_json = until
@@ -93,6 +102,7 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
     data = {}
     tweets = []
     do_fetch = True
+    between = False
     json_tweets = []
     # Remove file with same filename if exists
     if os.path.isfile(filename) :
@@ -106,6 +116,7 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
         json_tweets = json_data['tweets']
         json_tweets.reverse()
         if until_date <= until_date2 and until_date >= since_date2 :
+            between = True
             count = 0
             for tweet in json_tweets :
                 timestamp = tweet['timestamp']
@@ -123,13 +134,24 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
             until_date1 += datetime.timedelta(days=-1)
             until_json = until2
             limit = limit - count
-            print('Load from cache ' + str(count) + ' tweets')
+            print('(1) Load from cache ' + str(count) + ' tweets')
         if since_date <= until_date2 and since_date >= since_date2 :
+            between = True
             since_date1 = until_date2
             since_json = since2
+        if not between :
+            if until_date < since_date2 :
+                since_json = since
+            elif since_date > until_date2 :
+                until_json = until
+            else :
+                since_date_double = since_date
 
     if until_date1 < since_date1 :
         do_fetch = False
+        print('Unnecessary to fetch')
+        return tweets
+
     since = since_date1.strftime('%Y-%m-%d')
     until = until_date1.strftime('%Y-%m-%d')
 
@@ -149,24 +171,24 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
     data['query'] = query
 
     to_save = []
-    if do_fetch :
-        # fetch tweets and add them to dic
-        query_tweets = fetch_tweets(subject, since, until, near, limit)
-        query_tweets.reverse()
-        print('Fetched ' + str(len(query_tweets)) + ' tweets')
-        fetched_tweets = []
-        for tweet in query_tweets:
-            t = {}
-            t['text'] = tweet.text
-            t['timestamp'] = str(tweet.timestamp)
-            fetched_tweets.append(t)
-        if not tweets :
-            to_save.extend(fetched_tweets)
-            to_save.extend(json_tweets)
-        else :
-            to_save.extend(json_tweets)
-            to_save.extend(fetched_tweets)
-        tweets.extend(fetched_tweets)
+    # fetch tweets and add them to dic
+    query_tweets = fetch_tweets(subject, since, until, near, limit)
+    query_tweets.reverse()
+    print('Fetched ' + str(len(query_tweets)) + ' tweets')
+    fetched_tweets = []
+    for tweet in query_tweets:
+        t = {}
+        t['text'] = tweet.text
+        t['timestamp'] = str(tweet.timestamp)
+        fetched_tweets.append(t)
+    if not tweets :
+        to_save.extend(fetched_tweets)
+        to_save.extend(json_tweets)
+    else :
+        to_save.extend(json_tweets)
+        to_save.extend(fetched_tweets)
+    tweets.extend(fetched_tweets)
+    if between :
         count = len(tweets)
         i = 0
         for tweet in json_tweets :
@@ -180,15 +202,12 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
                     count += 1
                     i += 1
                 else :
-                    do_fetch = False
                     break
-        print('Load from cache ' + str(i) + ' tweets')        
-    else :
-        to_save = json_tweets
-        print('Unnecessary to fetch')
+        print('(2) Load from cache ' + str(i) + ' tweets')
 
     to_save.reverse()
     data['tweets'] = to_save
+    
     # save tweets into file as json
     file = open(filename, 'w')
     file.write(json.dumps(data))

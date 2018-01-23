@@ -5,6 +5,7 @@ import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
+from matplotlib import pyplot as plt
 from .view import View
 from ..controllers.main_view_controller import MainViewController
 
@@ -149,12 +150,18 @@ class MainView(View):
                 command=self.controller.fetch)
         self.btn_fetch.grid(row=0, column=0, pady=(20,0))
 
+        # Add Cancel Fetch Tweets Button
+        self.btn_fetch = tk.Button(subframe, text="Cancel",
+                command=self.controller.cancel)
+        self.btn_fetch.grid(row=0, column=1, pady=(20,0))
+
+
         # Add Load Tweets Button
         self.btn_load = tk.Button(subframe, text="Load Tweets")
-        self.btn_load.grid(row=0, column=1, pady=(20,0))
+        self.btn_load.grid(row=1, column=0, pady=(20,0))
 
         # Add export Tweets Button
-        self.btn_export = tk.Button(subframe, text="Export Tweets",
+        self.btn_export = tk.Button(subframe, text="Save Tweets",
                 command=self.controller.export)
         self.btn_export.grid(row=1, column=0, columnspan=2, pady=(0,20))
 
@@ -165,6 +172,11 @@ class MainView(View):
         self.btn_analyze.config(state='disabled')
 
 
+    def addProgressBar(self):
+        #self.progress_bar = bar
+        #self.grid(row=0, column=2)
+        pass
+
     def add_message(self, frame, msg):
         if self.message_box is None:
             self.message_box = tk.Message(frame, text=msg, relief='raised', aspect=400, bd=5, width=250)
@@ -172,27 +184,59 @@ class MainView(View):
         else:
             self.message_box.config(text=msg)
 
-    def plot_data(self, pos_idx, neg_idx, empty_idx, evaluations, ticks):
-        #addint a subframe to draw a plot as i can add in the right other options or information
+    def plot_data(self, pos_idx, neg_idx, empty_idx, evaluations, ticks, periods):
         #init a figure
         fig = Figure(figsize=(4,4), dpi=80)
         ax = fig.add_subplot(111)
-        # plot the figure
+        
+        # plot middle line
         ax.axhline(c='c', ls='-')
-        ax.plot(empty_idx + ticks[0], [0] * empty_idx.shape[0], 'kX', label = 'Empty')
-        ax.bar(pos_idx + ticks[0], evaluations[pos_idx], color='g', label = 'Positive')
-        ax.bar(neg_idx + ticks[0], evaluations[neg_idx], color='r', label = 'Negative')
+        # plot empty periods
+        emp, = ax.plot(empty_idx + ticks[0], [0] * empty_idx.shape[0], 'kX') 
+        # plot positive periods
+        pos = ax.bar(pos_idx + ticks[0], evaluations[pos_idx], color= 'g')
+        # plot negative periods
+        neg = ax.bar(neg_idx + ticks[0], evaluations[neg_idx], color= 'r')
+        
+        # set axes parameters
         ax.set_ylim([-1.5, 1.5])
-        # ax.xaxis.set_ticks(ticks)
+        ax.set_xticklabels(["T {}".format(t) for t in ticks],
+                rotation='vertical', fontsize=7)
         ax.set_xlabel('Period')
         ax.set_ylabel('Average Period Polarity')
-        # ax.legend()
+        
+        # show legend
+        handles, labels = [], []
+        if empty_idx.shape[0] != 0:
+            handles.append(emp)
+            labels.append("Empty")
+        if pos_idx.shape[0] != 0:
+            handles.append(pos[0])
+            labels.append("Positive")
+        if neg_idx.shape[0] != 0:
+            handles.append(neg[0])
+            labels.append("Negative")
+        ax.legend(handles, labels, bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+           ncol=3, mode="expand", borderaxespad=0.) 
+        
         # setting values under cursor
+        def __format_coord(x, y):
+            col = int(x+0.5) 
+            if ticks.shape[0] == 1:
+                return ''
+            if col >= ticks[0] and col <= ticks[-1]:
+                T1, T2 = periods[col - ticks[0]]
+                if T1 is None:
+                    return 'No tweets'
+                return 'From: {}\nTo   : {}'.format(T1, T2)
+            return 'No tweets'
+        ax.format_coord = __format_coord
 
         # aggregate the figure to the frame plot
         canvas = FigureCanvasTkAgg(fig, self.plot_frame)
         canvas.show()
         canvas.get_tk_widget().grid(row=3, column=0, columnspan=3)
+        
         # adding the toolbar to the frame plot
         if self.toolbar_frame is not None:
             self.toolbar_frame.destroy()
@@ -201,6 +245,8 @@ class MainView(View):
         toolbar = NavigationToolbar(canvas, self.toolbar_frame)
         toolbar.pack(side='left')
         toolbar.update()
+
+
 
 class NavigationToolbar(NavigationToolbar2TkAgg):
     # only display the buttons we need
