@@ -116,8 +116,10 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
 
         json_tweets = json_data['tweets']
         json_tweets.reverse()
-        print(str(len(json_tweets)) + ' tweets in cache for this query')
-        if until_date <= until_date2 and until_date >= since_date2 :
+        nb_cached = len(json_tweets)
+        print(str(nb_cached) + ' tweets in cache for this query')
+
+        if until_date >= since_date2 and until_date < until_date2 :
             between = True
             count = 0
             for tweet in json_tweets :
@@ -138,12 +140,24 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
             until_json = until2
             limit = limit - count
             print('(1) Loaded ' + str(count) + ' tweets from cache')
-        if since_date <= until_date2 and since_date >= since_date2 :
+        if since_date <= until_date2 and since_date > since_date2 :
             between = True
             since_date1 = until_date2
             since_json = since2
         if not between :
-            if until_date < since_date2 :
+            if until_date == until_date2 and since_date == since_date2 :
+                count = 0
+                for tweet in json_tweets :
+                    timestamp = tweet['timestamp']
+                    date_time = datetime.datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
+                    if count < limit :
+                        t = Tweet(timestamp=date_time, text=tweet['text'], user='', fullname='', id='', url='', replies='', retweets='', likes='')
+                        tweets.append(t)
+                        count += 1
+                    else :
+                        do_fetch = False
+                        break
+            elif until_date < since_date2 :
                 since_json = since
             elif since_date > until_date2 :
                 until_json = until
