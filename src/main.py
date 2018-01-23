@@ -7,7 +7,7 @@ from gui.views.main_view import MainView
 def main(argv):
     # root window created.
     root = tk.Tk()
-    root.geometry("750x520")
+    root.geometry("740x530")
     # add MainView to root
     MainView(root).pack(side="top", fill="both", expand=True)
     # main loop
