@@ -178,12 +178,11 @@ class MainView(View):
         else:
             self.message_box.config(text=msg)
 
-    def plot_data(self, pos_idx, neg_idx, empty_idx, evaluations, ticks):
-        #addint a subframe to draw a plot as i can add in the right other options or information
+    def plot_data(self, pos_idx, neg_idx, empty_idx, evaluations, ticks, periods):
         #init a figure
         fig = Figure(figsize=(4,4), dpi=80)
         ax = fig.add_subplot(111)
-        ## plot the figure
+        
         # plot middle line
         ax.axhline(c='c', ls='-')
         # plot empty periods
@@ -192,12 +191,14 @@ class MainView(View):
         pos = ax.bar(pos_idx + ticks[0], evaluations[pos_idx], color= 'g')
         # plot negative periods
         neg = ax.bar(neg_idx + ticks[0], evaluations[neg_idx], color= 'r')
+        
         # set axes parameters
         ax.set_ylim([-1.5, 1.5])
         ax.set_xticklabels(["T {}".format(t) for t in ticks],
                 rotation='vertical', fontsize=7)
         ax.set_xlabel('Period')
         ax.set_ylabel('Average Period Polarity')
+        
         # show legend
         handles, labels = [], []
         if empty_idx.shape[0] != 0:
@@ -209,15 +210,27 @@ class MainView(View):
         if neg_idx.shape[0] != 0:
             handles.append(neg[0])
             labels.append("Negative")
-#        ax.legend(handles, labels, loc='best') 
         ax.legend(handles, labels, bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
            ncol=3, mode="expand", borderaxespad=0.) 
+        
         # setting values under cursor
+        def __format_coord(x, y):
+            col = int(x+0.5) 
+            if ticks.shape[0] == 1:
+                return ''
+            if col >= ticks[0] and col <= ticks[-1]:
+                T1, T2 = periods[col - ticks[0]]
+                if T1 is None:
+                    return 'No tweets'
+                return 'From: {}\nTo   : {}'.format(T1, T2)
+            return 'No tweets'
+        ax.format_coord = __format_coord
 
         # aggregate the figure to the frame plot
         canvas = FigureCanvasTkAgg(fig, self.plot_frame)
         canvas.show()
         canvas.get_tk_widget().grid(row=3, column=0, columnspan=3)
+        
         # adding the toolbar to the frame plot
         if self.toolbar_frame is not None:
             self.toolbar_frame.destroy()
@@ -226,6 +239,8 @@ class MainView(View):
         toolbar = NavigationToolbar(canvas, self.toolbar_frame)
         toolbar.pack(side='left')
         toolbar.update()
+
+
 
 class NavigationToolbar(NavigationToolbar2TkAgg):
     # only display the buttons we need

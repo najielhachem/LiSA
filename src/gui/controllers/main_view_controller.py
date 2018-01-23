@@ -103,7 +103,7 @@ class MainViewController(Controller):
         end = time.mktime(datetime.datetime.strptime(end, "%Y-%m-%d").timetuple())
 
         # get data
-        evaluations = self.model.segment_labels(period, start, end)
+        evaluations, periods = self.model.segment_labels(period, start, end)
 
         # truncate data_frame
         n = evaluations.shape[0]
@@ -114,6 +114,7 @@ class MainViewController(Controller):
             if evaluations[n - i - 1] != -2 and i1 == -1:
                 i1 = n - i
 
+        periods = periods[i0:i1]
         evaluations = evaluations[i0:i1]
         empty_idx = np.where(evaluations == -2)[0]
         pos_idx = np.where(evaluations > 0)[0]
@@ -121,7 +122,7 @@ class MainViewController(Controller):
         ticks = np.arange(i0, i1)
 
         # plot data
-        self.view.plot_data(pos_idx, neg_idx, empty_idx, evaluations, ticks)
+        self.view.plot_data(pos_idx, neg_idx, empty_idx, evaluations, ticks, periods)
 
     def calendar_click(self, var):
         cd = CalendarDialog(self.view)
