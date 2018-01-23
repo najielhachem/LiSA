@@ -36,7 +36,7 @@ class MainViewController(Controller):
 
     def fetchThread(self):
         self.view.add_message(self.view.data_frame, "Fetching tweets...")
-        self.view.rm_plot_frame()
+        self.view.rm_analyze_frame()
         self.view.update()
         subject = self.view.subject.get()
         location = self.view.location.get()
@@ -77,8 +77,8 @@ class MainViewController(Controller):
         self.model.analyze()
         self.view.add_message(self.view.data_frame, "Tweet analyzed")
         self.view.update()
-        # Add Plot Frame
-        self.view.add_plot_frame()
+        # Add Analyze Frame
+        self.view.add_analyze_frame()
         self.view.btn_analyze.config(state='disabled')
 
 

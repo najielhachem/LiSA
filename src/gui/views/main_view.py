@@ -22,7 +22,7 @@ class MainView(View):
         self.init_window()
         self.add_data_frame()
         # Setting Reusable Variables to None
-        self.plot_frame = None
+        self.analyze_frame = None
         self.toolbar_frame = None
         self.message_box = None
 
@@ -72,53 +72,62 @@ class MainView(View):
         lbl_frame.config(font=("Courier", 20))
         self.add_input_form(self.data_frame)
 
-    def add_plot_frame(self):
-        self.plot_frame = tk.Frame(self)
-        self.plot_frame.grid(row=0, column=3, padx=10, sticky='n')
+    def add_analyze_frame(self):
+        self.analyze_frame = tk.Frame(self)
+        self.analyze_frame.grid(row=0, column=1, padx=10, sticky='n')
         # Frame title
-        lbl_frame = tk.Label(self.plot_frame, text="Analyzer")
+        lbl_frame = tk.Label(self.analyze_frame, text="Analyzer")
         lbl_frame.grid(row=0, column=0, columnspan=3, pady=20)
         lbl_frame.config(font=("Courier", 20))
-        self.add_plot_form(self.plot_frame)
+        self.add_plot_frame(self.analyze_frame)
 
-    def rm_plot_frame(self):
-        if self.plot_frame is not None:
-            self.plot_frame.pack_forget()
+    def rm_analyze_frame(self):
+        if self.analyze_frame is not None:
+            self.analyze_frame.pack_forget()
 
-    def add_plot_form(self, frame):
+    def add_plot_frame(self, frame):
         # Period Label
-        lbl_period = tk.Label(frame, text='Period')
-        lbl_period.grid(row=1, column=0, sticky='n')
+        self.plot_frame = tk.Frame(frame, bd=10, relief='raised')
+        self.plot_frame.grid(row=1, column=0, columnspan=3)
+        lbl_period = tk.Label(self.plot_frame, text='Period')
+        lbl_period.grid(row=1, column=0, sticky='w')
+        
         # Period Entry
-        self.period_entry = tk.Entry(frame)
+        self.period_entry = tk.Entry(self.plot_frame)
         self.period_entry.insert('end', '10')
         self.period_entry.grid(row=1, column=1)
+        
         # Period Metric
-        self.period_metric = tk.StringVar(frame)
+        self.period_metric = tk.StringVar(self.plot_frame)
         self.period_metric.set('hours')
-        opt_metric = tk.OptionMenu(frame, self.period_metric, "seconds", "minutes", "hours", "days", "months")
+        opt_metric = tk.OptionMenu(self.plot_frame, self.period_metric, 
+                "seconds", "minutes", "hours", "days", "months")
         opt_metric.grid(row=1, column=2)
+        
         # Plot Button
-        btn_plot = tk.Button(frame, text='Plot',
+        btn_plot = tk.Button(self.plot_frame, text='Plot',
                 command=self.controller.plot)
         btn_plot.grid(row=2, column=1)
 
     def add_input_form(self, frame):
+        input_frame = tk.Frame(frame, bd=10, relief='sunken')
+        input_frame.grid(row=1, column=0, columnspan=2, ipadx=5) 
+
         # Subject Input
-        tk.Label(frame, text="Subject").grid(row=1, column=0, sticky='w')
-        self.subject = tk.Entry(frame)
+        tk.Label(input_frame, text="Subject").grid(row=1, column=0, sticky='w')
+        self.subject = tk.Entry(input_frame)
         self.subject.insert('end', 'Trump')
         self.subject.grid(row=1, column=1)
 
         # Location Input
-        tk.Label(frame, text="Location").grid(row=2, column=0, sticky='w')
-        self.location = tk.Entry(frame)
+        tk.Label(input_frame, text="Location").grid(row=2, column=0, sticky='w')
+        self.location = tk.Entry(input_frame)
         self.location.insert('end', 'Paris')
         self.location.grid(row=2, column=1)
 
         # Number of Tweets Input
-        tk.Label(frame, text="Nb Tweets").grid(row=3, column=0, sticky='w')
-        self.limit = tk.Entry(frame)
+        tk.Label(input_frame, text="Nb Tweets").grid(row=3, column=0, sticky='w')
+        self.limit = tk.Entry(input_frame)
         self.limit.insert('end', '10')
         self.limit.grid(row=3, column=1)
 
@@ -128,51 +137,58 @@ class MainView(View):
         now = datetime.datetime.now()
         begin = now - datetime.timedelta(days=number_days_offset)
 
-        date_frame = tk.Frame(frame)
-        date_frame.grid(row=4, column=0, columnspan=2)
         # Start Date Input
-        tk.Label(date_frame, text="From").grid(row=0, column=0)
-        self.date_start = tk.StringVar(value=str(begin.year) + "-" + str(begin.month) + "-" + str(begin.day))
-        btn_start = tk.Button(date_frame, textvariable=self.date_start,
+        tk.Label(input_frame, text="From").grid(row=4, column=0, sticky='w')
+        self.date_start = tk.StringVar(value = str(begin.year) + "-" 
+                + str(begin.month) + "-" + str(begin.day))
+        btn_start = tk.Button(input_frame, textvariable=self.date_start,
                 command=lambda:self.controller.calendar_click(self.date_start))
-        btn_start.grid(row=0, column=1)
+        btn_start.grid(row=4, column=1, sticky='we')
 
         # End Date Input
-        tk.Label(date_frame, text="To").grid(row=0, column=2)
-        self.date_end = tk.StringVar(value=str(now.year) + "-" + str(now.month) + "-" + str(now.day))
-        btn_end = tk.Button(date_frame, textvariable=self.date_end,
+        tk.Label(input_frame, text="To").grid(row=5, column=0, sticky='w')
+        self.date_end = tk.StringVar(value=str(now.year) + "-" 
+                + str(now.month) + "-" + str(now.day))
+        btn_end = tk.Button(input_frame, textvariable=self.date_end,
                 command=lambda:self.controller.calendar_click(self.date_end))
-        btn_end.grid(row=0, column=3)
+        btn_end.grid(row=5, column=1, sticky='we')
 
-        subframe = tk.Frame(frame)
-        subframe.grid(row=5, column=0, columnspan=2)
+        # Add seperator
+        sep_frame = tk.Frame(frame, bd=3, relief='groove', height=10, bg='black')
+        sep_frame.grid(row=2, column=0, columnspan=2, sticky='we', pady=(0, 0))
+        
+        # Buttons subframe
+        btn_frame = tk.Frame(frame, bd=10, relief='sunken') 
+        btn_frame.grid(row=3, column=0, columnspan=2)
+
         # Add Fetch Tweets Button
-        self.btn_fetch = tk.Button(subframe, text="Fetch Tweets",
+        self.btn_fetch = tk.Button(btn_frame, text="Fetch Tweets",
                 command=self.controller.fetch)
-        self.btn_fetch.grid(row=0, column=0, pady=(20,0))
+        self.btn_fetch.grid(row=0, column=0)
 
         # Add Cancel Fetch Tweets Button
-        self.btn_fetch = tk.Button(subframe, text="Cancel",
+        self.btn_fetch = tk.Button(btn_frame, text="Cancel Fetch",
                 command=self.controller.cancel)
-        self.btn_fetch.grid(row=0, column=1, pady=(20,0))
+        self.btn_fetch.grid(row=0, column=1)
 
 
         # Add Load Tweets Button
-        self.btn_load = tk.Button(subframe, text="Load Tweets")
-        self.btn_load.grid(row=1, column=0, columnspan=2, pady=(20,0))
+        self.btn_load = tk.Button(btn_frame, text="Load Tweets")
+        self.btn_load.grid(row=1, column=0)
 
         # Add export Tweets Button
-        self.btn_export = tk.Button(subframe, text="Save Tweets",
+        self.btn_export = tk.Button(btn_frame, text="Save Tweets",
                 command=self.controller.export)
-        self.btn_export.grid(row=2, column = 0, pady=(20,0))
+        self.btn_export.grid(row=1, column = 1)
 
         # Add choose classifier Button
-        self.btn_choose_clf = tk.Button(subframe, text="Choose clf",
+        self.btn_choose_clf = tk.Button(btn_frame, text="Advanced",
                 command= self.popup_list_clf)
-        self.btn_choose_clf.grid(row=2, column = 1, pady=(20,0))
+        self.btn_choose_clf.grid(row=3, column = 0, columnspan=2, 
+                pady=(15,0))
 
         # Add Analyze Tweets Button
-        self.btn_analyze = tk.Button(subframe, text="Analyze Tweets",
+        self.btn_analyze = tk.Button(btn_frame, text="Analyze Tweets",
                 command=self.controller.analyze)
         self.btn_analyze.grid(row=4, column=0, columnspan=2)
         self.btn_analyze.config(state='disabled')
@@ -186,25 +202,24 @@ class MainView(View):
     def add_message(self, frame, msg):
         if self.message_box is None:
             self.message_box = tk.Message(frame, text=msg, relief='raised', aspect=400, bd=5, width=250)
-            self.message_box.grid(row=6, column=0, columnspan=2, pady=10)
+            self.message_box.grid(row=4, column=0, columnspan=2, pady=10)
         else:
             self.message_box.config(text=msg)
+
     def popup_list_clf(self):
         win = tk.Toplevel()
         win.wm_title("Choose Classifiers")
         listbox = tk.Listbox(win)
         listbox.pack()
-        #listbox.insert(END, "a list entry")
         clfs = classifier.get_classifiers()
         value = None
-        #listbox.bind('<<ListboxSelect>>', value = listbox.get(0))
-        #value: value =
         for key, value in clfs.items():
             listbox.insert(tk.END, key)
-        b = tk.Button(win, text="validate", command= lambda: [f() for f in [lambda:self.controller.init_model(listbox.get(tk.ACTIVE)),win.destroy]])
+        b = tk.Button(win, text="validate", command = lambda: [f() for f in [lambda:self.controller.init_model(listbox.get(tk.ACTIVE)),win.destroy]])
         b.pack()
 
-    def plot_data(self, pos_idx, neg_idx, empty_idx, evaluations, ticks, periods):
+    def plot_data(self, pos_idx, neg_idx, empty_idx,
+            evaluations, ticks, periods):
         #init a figure
         fig = Figure(figsize=(4,4), dpi=80)
         ax = fig.add_subplot(111)
