@@ -5,6 +5,7 @@ import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
+from matplotlib import pyplot as plt
 from .view import View
 from ..controllers.main_view_controller import MainViewController
 
@@ -182,16 +183,35 @@ class MainView(View):
         #init a figure
         fig = Figure(figsize=(4,4), dpi=80)
         ax = fig.add_subplot(111)
-        # plot the figure
+        ## plot the figure
+        # plot middle line
         ax.axhline(c='c', ls='-')
-        ax.plot(empty_idx + ticks[0], [0] * empty_idx.shape[0], 'kX', label = 'Empty')
-        ax.bar(pos_idx + ticks[0], evaluations[pos_idx], color='g', label = 'Positive')
-        ax.bar(neg_idx + ticks[0], evaluations[neg_idx], color='r', label = 'Negative')
+        # plot empty periods
+        emp, = ax.plot(empty_idx + ticks[0], [0] * empty_idx.shape[0], 'kX') 
+        # plot positive periods
+        pos = ax.bar(pos_idx + ticks[0], evaluations[pos_idx], color= 'g')
+        # plot negative periods
+        neg = ax.bar(neg_idx + ticks[0], evaluations[neg_idx], color= 'r')
+        # set axes parameters
         ax.set_ylim([-1.5, 1.5])
-        # ax.xaxis.set_ticks(ticks)
+        ax.set_xticklabels(["T {}".format(t) for t in ticks],
+                rotation='vertical', fontsize=7)
         ax.set_xlabel('Period')
         ax.set_ylabel('Average Period Polarity')
-        # ax.legend()
+        # show legend
+        handles, labels = [], []
+        if empty_idx.shape[0] != 0:
+            handles.append(emp)
+            labels.append("Empty")
+        if pos_idx.shape[0] != 0:
+            handles.append(pos[0])
+            labels.append("Positive")
+        if neg_idx.shape[0] != 0:
+            handles.append(neg[0])
+            labels.append("Negative")
+#        ax.legend(handles, labels, loc='best') 
+        ax.legend(handles, labels, bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+           ncol=3, mode="expand", borderaxespad=0.) 
         # setting values under cursor
 
         # aggregate the figure to the frame plot

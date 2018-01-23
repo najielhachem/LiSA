@@ -30,7 +30,6 @@ class Analyzer:
         tweets_text = self.vectorize_data(tweets_text)
         try:
             self.labels = self.classifier.predict(tweets_text)
-            print(self.labels)
         except:
             self.classifier.load()
             self.labels = self.classifier.predict(tweets_text)
