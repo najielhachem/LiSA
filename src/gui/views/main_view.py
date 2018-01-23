@@ -253,19 +253,6 @@ class MainView(View):
         ax.legend(handles, labels, bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
            ncol=3, mode="expand", borderaxespad=0.)
 
-        # setting values under cursor
-        def __format_coord(x, y):
-            col = int(x+0.5)
-            if ticks.shape[0] == 1:
-                return ''
-            if col >= ticks[0] and col <= ticks[-1]:
-                T1, T2 = periods[col - ticks[0]]
-                if T1 is None:
-                    return 'No tweets'
-                return 'From: {}\nTo   : {}'.format(T1, T2)
-            return 'No tweets'
-        ax.format_coord = __format_coord
-
         # aggregate the figure to the frame plot
         canvas = FigureCanvasTkAgg(fig, self.plot_frame)
         canvas.show()
@@ -279,6 +266,22 @@ class MainView(View):
         toolbar = NavigationToolbar(canvas, self.toolbar_frame)
         toolbar.pack(side='left')
         toolbar.update()
+
+        # setting values under cursor
+        def __format_coord(x, y):
+            if toolbar._active is not None:
+                return ""
+            col = int(x+0.5)
+            if ticks.shape[0] == 1:
+                return ''
+            if col >= ticks[0] and col <= ticks[-1]:
+                T1, T2 = periods[col - ticks[0]]
+                if T1 is None:
+                    return 'No tweets'
+                return 'From: {}\nTo   : {}'.format(T1, T2)
+            return 'No tweets'
+        ax.format_coord = __format_coord
+
 
 
 
