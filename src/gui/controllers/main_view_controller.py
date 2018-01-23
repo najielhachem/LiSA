@@ -43,11 +43,8 @@ class MainViewController(Controller):
         limit = int(self.view.limit.get())
         since = self.view.date_start.get()
         until = self.view.date_end.get()
-        if self.view.save_check.get() == 0 :
-            tweets = parser.fetch_tweets(subject=subject, since=since,
-                        until=until, near=(None if location == "" else location), limit=limit)
-        else :
-            tweets = parser.fetch_and_save_tweets(filename=subject + '.json', subject=subject, since=since, until=until, near=(None if location == "" else location), limit=limit)
+        tweets = parser.fetch_and_save_tweets(filename=subject + '.json', subject=subject, since=since, until=until, near=(None if location == "" else location), limit=limit)
+        print('Tweets returned  : ' + str(len(tweets)))
         self.model.set_tweets(tweets)
         text_message = "Tweets that match your requirements are downloaded and ready to be to be proceseed!\nTotal of {} tweets download".format(len(tweets))
         self.view.add_message(self.view.data_frame, text_message)
@@ -67,6 +64,7 @@ class MainViewController(Controller):
     def fetch(self):
         self.f = FuncThread(self.fetchThread)
         self.f.start()
+        self.view.addProgressBar()
 
     def cancel(self):
         self.f = None
@@ -103,7 +101,7 @@ class MainViewController(Controller):
         end = time.mktime(datetime.datetime.strptime(end, "%Y-%m-%d").timetuple())
 
         # get data
-        evaluations = self.model.segment_labels(period, start, end)
+        evaluations, periods = self.model.segment_labels(period, start, end)
 
         # truncate data_frame
         n = evaluations.shape[0]
@@ -114,6 +112,7 @@ class MainViewController(Controller):
             if evaluations[n - i - 1] != -2 and i1 == -1:
                 i1 = n - i
 
+        periods = periods[i0:i1]
         evaluations = evaluations[i0:i1]
         empty_idx = np.where(evaluations == -2)[0]
         pos_idx = np.where(evaluations > 0)[0]
@@ -121,7 +120,7 @@ class MainViewController(Controller):
         ticks = np.arange(i0, i1)
 
         # plot data
-        self.view.plot_data(pos_idx, neg_idx, empty_idx, evaluations, ticks)
+        self.view.plot_data(pos_idx, neg_idx, empty_idx, evaluations, ticks, periods)
 
     def calendar_click(self, var):
         cd = CalendarDialog(self.view)

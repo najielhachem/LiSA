@@ -151,17 +151,18 @@ class MainView(View):
                 command=self.controller.fetch)
         self.btn_fetch.grid(row=0, column=0, pady=(20,0))
 
+        # Add Cancel Fetch Tweets Button
+        self.btn_fetch = tk.Button(subframe, text="Cancel",
+                command=self.controller.cancel)
+        self.btn_fetch.grid(row=0, column=1, pady=(20,0))
+
+
         # Add Load Tweets Button
         self.btn_load = tk.Button(subframe, text="Load Tweets")
-        self.btn_load.grid(row=0, column=1, pady=(20,0))
-
-        # Add Save Tweets Check Box
-        self.save_check = tk.IntVar()
-        self.btn_save = tk.Checkbutton(subframe, text='Save after fetch', variable=self.save_check)
-        self.btn_save.grid(row=1, column=0, columnspan=2, pady=(0,20))
+        self.btn_load.grid(row=1, column=0, columnspan=2, pady=(20,0))
 
         # Add export Tweets Button
-        self.btn_export = tk.Button(subframe, text="Export Tweets",
+        self.btn_export = tk.Button(subframe, text="Save Tweets",
                 command=self.controller.export)
         self.btn_export.grid(row=2, column = 0, pady=(20,0))
 
@@ -176,6 +177,11 @@ class MainView(View):
         self.btn_analyze.grid(row=4, column=0, columnspan=2)
         self.btn_analyze.config(state='disabled')
 
+
+    def addProgressBar(self):
+        #self.progress_bar = bar
+        #self.grid(row=0, column=2)
+        pass
 
     def add_message(self, frame, msg):
         if self.message_box is None:
@@ -198,12 +204,11 @@ class MainView(View):
         b = tk.Button(win, text="validate", command= lambda: [f() for f in [lambda:self.controller.init_model(listbox.get(tk.ACTIVE)),win.destroy]])
         b.pack()
 
-    def plot_data(self, pos_idx, neg_idx, empty_idx, evaluations, ticks):
-        #addint a subframe to draw a plot as i can add in the right other options or information
+    def plot_data(self, pos_idx, neg_idx, empty_idx, evaluations, ticks, periods):
         #init a figure
         fig = Figure(figsize=(4,4), dpi=80)
         ax = fig.add_subplot(111)
-        ## plot the figure
+
         # plot middle line
         ax.axhline(c='c', ls='-')
         # plot empty periods
@@ -212,12 +217,14 @@ class MainView(View):
         pos = ax.bar(pos_idx + ticks[0], evaluations[pos_idx], color= 'g')
         # plot negative periods
         neg = ax.bar(neg_idx + ticks[0], evaluations[neg_idx], color= 'r')
+
         # set axes parameters
         ax.set_ylim([-1.5, 1.5])
         ax.set_xticklabels(["T {}".format(t) for t in ticks],
                 rotation='vertical', fontsize=7)
         ax.set_xlabel('Period')
         ax.set_ylabel('Average Period Polarity')
+
         # show legend
         handles, labels = [], []
         if empty_idx.shape[0] != 0:
@@ -229,15 +236,33 @@ class MainView(View):
         if neg_idx.shape[0] != 0:
             handles.append(neg[0])
             labels.append("Negative")
+<<<<<<< HEAD
 #        ax.legend(handles, labels, loc='best')
         ax.legend(handles, labels, bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
            ncol=3, mode="expand", borderaxespad=0.)
+=======
+        ax.legend(handles, labels, bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+           ncol=3, mode="expand", borderaxespad=0.)
+
+>>>>>>> 9b8071737e04557c3bffd6edc53bc0639966c7d2
         # setting values under cursor
+        def __format_coord(x, y):
+            col = int(x+0.5)
+            if ticks.shape[0] == 1:
+                return ''
+            if col >= ticks[0] and col <= ticks[-1]:
+                T1, T2 = periods[col - ticks[0]]
+                if T1 is None:
+                    return 'No tweets'
+                return 'From: {}\nTo   : {}'.format(T1, T2)
+            return 'No tweets'
+        ax.format_coord = __format_coord
 
         # aggregate the figure to the frame plot
         canvas = FigureCanvasTkAgg(fig, self.plot_frame)
         canvas.show()
         canvas.get_tk_widget().grid(row=3, column=0, columnspan=3)
+
         # adding the toolbar to the frame plot
         if self.toolbar_frame is not None:
             self.toolbar_frame.destroy()
@@ -246,6 +271,8 @@ class MainView(View):
         toolbar = NavigationToolbar(canvas, self.toolbar_frame)
         toolbar.pack(side='left')
         toolbar.update()
+
+
 
 class NavigationToolbar(NavigationToolbar2TkAgg):
     # only display the buttons we need
