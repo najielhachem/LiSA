@@ -93,19 +93,19 @@ class MainView(View):
         self.plot_frame.grid(row=1, column=0, columnspan=3, ipadx=5, ipady=5)
         lbl_period = tk.Label(self.plot_frame, text='Period')
         lbl_period.grid(row=1, column=0, padx=(10, 0))
-        
+
         # Period Entry
         self.period_entry = tk.Entry(self.plot_frame)
         self.period_entry.insert('end', '10')
         self.period_entry.grid(row=1, column=1)
-        
+
         # Period Metric
         self.period_metric = tk.StringVar(self.plot_frame)
         self.period_metric.set('hours')
-        opt_metric = tk.OptionMenu(self.plot_frame, self.period_metric, 
+        opt_metric = tk.OptionMenu(self.plot_frame, self.period_metric,
                 "seconds", "minutes", "hours", "days", "months")
         opt_metric.grid(row=1, column=2)
-        
+
         # Plot Button
         btn_plot = tk.Button(self.plot_frame, text='Plot',
                 command=self.controller.plot)
@@ -113,7 +113,7 @@ class MainView(View):
 
     def add_input_form(self, frame):
         input_frame = tk.Frame(frame, bd=10, relief='sunken')
-        input_frame.grid(row=1, column=0, columnspan=2, ipadx=5, ipady=5) 
+        input_frame.grid(row=1, column=0, columnspan=2, ipadx=5, ipady=5)
 
         # Subject Input
         tk.Label(input_frame, text="Subject").grid(row=1, column=0, pady=(10,0))
@@ -141,7 +141,7 @@ class MainView(View):
 
         # Start Date Input
         tk.Label(input_frame, text="From").grid(row=4, column=0)
-        self.date_start = tk.StringVar(value = str(begin.year) + "-" 
+        self.date_start = tk.StringVar(value = str(begin.year) + "-"
                 + str(begin.month) + "-" + str(begin.day))
         btn_start = tk.Button(input_frame, textvariable=self.date_start,
                 command=lambda:self.controller.calendar_click(self.date_start))
@@ -149,7 +149,7 @@ class MainView(View):
 
         # End Date Input
         tk.Label(input_frame, text="To").grid(row=5, column=0)
-        self.date_end = tk.StringVar(value=str(now.year) + "-" 
+        self.date_end = tk.StringVar(value=str(now.year) + "-"
                 + str(now.month) + "-" + str(now.day))
         btn_end = tk.Button(input_frame, textvariable=self.date_end,
                 command=lambda:self.controller.calendar_click(self.date_end))
@@ -158,9 +158,9 @@ class MainView(View):
         # Add seperator
         sep_frame = tk.Frame(frame, bd=3, relief='groove', height=10, bg='black')
         sep_frame.grid(row=2, column=0, columnspan=2, sticky='we', pady=(0, 0))
-        
+
         # Buttons subframe
-        btn_frame = tk.Frame(frame, bd=10, relief='sunken') 
+        btn_frame = tk.Frame(frame, bd=10, relief='sunken')
         btn_frame.grid(row=3, column=0, columnspan=2, ipadx=5, ipady=5)
 
         # Add Fetch Tweets Button
@@ -185,7 +185,7 @@ class MainView(View):
         # Add choose classifier Button
         self.btn_choose_clf = tk.Button(btn_frame, text="Advanced",
                 command= self.popup_list_clf)
-        self.btn_choose_clf.grid(row=3, column = 0, columnspan=2, 
+        self.btn_choose_clf.grid(row=3, column = 0, columnspan=2,
                 pady=(15,0))
 
         # Add Analyze Tweets Button
@@ -194,17 +194,15 @@ class MainView(View):
         self.btn_analyze.grid(row=4, column=0, columnspan=2)
         self.btn_analyze.config(state='disabled')
 
-
-    def addProgressBar(self, frame):
-        self.progress_bar = Progressbar(self, orient=HORIZONTAL, length=100,  mode='determinate')
-        self.progress_bar.grid(columnspan=4)
-
     def add_message(self, frame, msg):
         if self.message_box is None:
             self.message_box = tk.Message(frame, text=msg, relief='raised', aspect=400, bd=5, width=250)
             self.message_box.grid(row=4, column=0, columnspan=2, pady=10)
         else:
             self.message_box.config(text=msg)
+
+    def remove_message(self):
+        self.message_box.destroy()
 
     def popup_list_clf(self):
         win = tk.Toplevel()

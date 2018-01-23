@@ -10,7 +10,6 @@ import tkcalendar
 import tkinter.simpledialog as simpledialog
 import data_processing.preprocessor as preprocessor
 import time, datetime
-import time
 
 from ..models.fetchThread import FuncThread
 
@@ -44,6 +43,7 @@ class MainViewController(Controller):
         limit = int(self.view.limit.get())
         since = self.view.date_start.get()
         until = self.view.date_end.get()
+
         tweets = parser.fetch_and_save_tweets(filename=subject + '.json', subject=subject, since=since, until=until, near=(None if location == "" else location), limit=limit)
         print('Tweets returned  : ' + str(len(tweets)))
         print()
@@ -63,27 +63,13 @@ class MainViewController(Controller):
             parser.save_tweets_2_file(tweets, f)
             f.close()
 
-    def majProgressBarThread(self):
-        self.view.progress_bar["value"] = 20
-        time.sleep(1)
-        self.view.progress_bar["value"] = 40
-        time.sleep(1)
-        self.view.progress_bar["value"] = 60
-        time.sleep(1)
-        self.view.progress_bar["value"] = 80
-        time.sleep(1)
-        self.view.progress_bar["value"] = 100
-
-
     def fetch(self):
         self.fetch_thread = FuncThread(self.fetchThread)
         self.fetch_thread.start()
-        self.view.addProgressBar(self.view.data_frame)
-        self.thread_progress_bar = FuncThread(self.majProgressBarThread)
-        self.thread_progress_bar.start()
 
     def cancel(self):
-        self.f = None
+        self.fetch_thread = None
+        self.view.remove_message();
 
     def analyze(self):
         self.view.add_message(self.view.data_frame, "Analyzing tweets")

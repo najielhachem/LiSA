@@ -84,6 +84,33 @@ def fetch_tweets(subject, since, until, near = None, limit = None):
     print('QUERY : ' + query)
     return query_tweets(query, limit)
 
+
+def getNbTweetsInCache(self, subject, since, until, near = None):
+    date_format = '%Y-%m-%d'
+    subject = subject.lower()
+    if near is not None:
+        near = near.lower()
+    filename = '.cache/' + subject + '_' + near + '.json'
+    if not(os.path.isdir('.cache')):
+        os.makedirs('.cache/')
+    since_date = datetime.datetime.strptime(since, date_format)
+    until_date = datetime.datetime.strptime(until, date_format)
+
+    if os.path.isfile(filename) :
+        json_file = open(filename, 'r')
+        json_data = json.load(json_file)
+        since2 = json_data['query']['since']
+        since_date2 = datetime.datetime.strptime(since2, date_format)
+        until2 = json_data['query']['until']
+        until_date2 = datetime.datetime.strptime(until2, date_format)
+
+        json_tweets = json_data['tweets']
+        json_tweets.reverse()
+        nb_cached = len(json_tweets)
+        return nb_cached
+    return 0
+
+
 def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = None):
     """
     Fetch tweets matching description and save them into file
@@ -285,7 +312,7 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
 
     to_save.reverse()
     data['tweets'] = to_save
-    
+
     # save tweets into file as json
     file = open(filename, 'w')
     file.write(json.dumps(data))
