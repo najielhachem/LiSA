@@ -44,6 +44,7 @@ class MainViewController(Controller):
         since = self.view.date_start.get()
         until = self.view.date_end.get()
         tweets = parser.fetch_and_save_tweets(filename=subject + '.json', subject=subject, since=since, until=until, near=(None if location == "" else location), limit=limit)
+        print('Tweets returned  : ' + str(len(tweets)))
         self.model.set_tweets(tweets)
         text_message = "Tweets that match your requirements are downloaded and ready to be to be proceseed!\nTotal of {} tweets download".format(len(tweets))
         self.view.add_message(self.view.data_frame, text_message)

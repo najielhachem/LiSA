@@ -158,12 +158,12 @@ class MainView(View):
 
         # Add Load Tweets Button
         self.btn_load = tk.Button(subframe, text="Load Tweets")
-        self.btn_load.grid(row=1, column=0, pady=(20,0))
+        self.btn_load.grid(row=1, column=0, columnspan=2, pady=(20,0))
 
         # Add export Tweets Button
         self.btn_export = tk.Button(subframe, text="Save Tweets",
                 command=self.controller.export)
-        self.btn_export.grid(row=1, column=0, columnspan=2, pady=(0,20))
+        self.btn_export.grid(row=2, column=0, columnspan=2, pady=(0,20))
 
         # Add Analyze Tweets Button
         self.btn_analyze = tk.Button(subframe, text="Analyze Tweets",
