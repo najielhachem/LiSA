@@ -1,6 +1,7 @@
 import tkinter as tk
 import datetime
-
+import gui.models.classifiers as classifier
+from ..models.analyzer import Analyzer
 import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
@@ -163,12 +164,17 @@ class MainView(View):
         # Add export Tweets Button
         self.btn_export = tk.Button(subframe, text="Save Tweets",
                 command=self.controller.export)
-        self.btn_export.grid(row=2, column=0, columnspan=2, pady=(0,20))
+        self.btn_export.grid(row=2, column = 0, pady=(20,0))
+
+        # Add choose classifier Button
+        self.btn_choose_clf = tk.Button(subframe, text="Choose clf",
+                command= self.popup_list_clf)
+        self.btn_choose_clf.grid(row=2, column = 1, pady=(20,0))
 
         # Add Analyze Tweets Button
         self.btn_analyze = tk.Button(subframe, text="Analyze Tweets",
                 command=self.controller.analyze)
-        self.btn_analyze.grid(row=3, column=0, columnspan=2)
+        self.btn_analyze.grid(row=4, column=0, columnspan=2)
         self.btn_analyze.config(state='disabled')
 
 
@@ -183,28 +189,42 @@ class MainView(View):
             self.message_box.grid(row=6, column=0, columnspan=2, pady=10)
         else:
             self.message_box.config(text=msg)
+    def popup_list_clf(self):
+        win = tk.Toplevel()
+        win.wm_title("Choose Classifiers")
+        listbox = tk.Listbox(win)
+        listbox.pack()
+        #listbox.insert(END, "a list entry")
+        clfs = classifier.get_classifiers()
+        value = None
+        #listbox.bind('<<ListboxSelect>>', value = listbox.get(0))
+        #value: value =
+        for key, value in clfs.items():
+            listbox.insert(tk.END, key)
+        b = tk.Button(win, text="validate", command= lambda: [f() for f in [lambda:self.controller.init_model(listbox.get(tk.ACTIVE)),win.destroy]])
+        b.pack()
 
     def plot_data(self, pos_idx, neg_idx, empty_idx, evaluations, ticks, periods):
         #init a figure
         fig = Figure(figsize=(4,4), dpi=80)
         ax = fig.add_subplot(111)
-        
+
         # plot middle line
         ax.axhline(c='c', ls='-')
         # plot empty periods
-        emp, = ax.plot(empty_idx + ticks[0], [0] * empty_idx.shape[0], 'kX') 
+        emp, = ax.plot(empty_idx + ticks[0], [0] * empty_idx.shape[0], 'kX')
         # plot positive periods
         pos = ax.bar(pos_idx + ticks[0], evaluations[pos_idx], color= 'g')
         # plot negative periods
         neg = ax.bar(neg_idx + ticks[0], evaluations[neg_idx], color= 'r')
-        
+
         # set axes parameters
         ax.set_ylim([-1.5, 1.5])
         ax.set_xticklabels(["T {}".format(t) for t in ticks],
                 rotation='vertical', fontsize=7)
         ax.set_xlabel('Period')
         ax.set_ylabel('Average Period Polarity')
-        
+
         # show legend
         handles, labels = [], []
         if empty_idx.shape[0] != 0:
@@ -216,12 +236,18 @@ class MainView(View):
         if neg_idx.shape[0] != 0:
             handles.append(neg[0])
             labels.append("Negative")
+<<<<<<< HEAD
+#        ax.legend(handles, labels, loc='best')
         ax.legend(handles, labels, bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
-           ncol=3, mode="expand", borderaxespad=0.) 
-        
+           ncol=3, mode="expand", borderaxespad=0.)
+=======
+        ax.legend(handles, labels, bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+           ncol=3, mode="expand", borderaxespad=0.)
+
+>>>>>>> 9b8071737e04557c3bffd6edc53bc0639966c7d2
         # setting values under cursor
         def __format_coord(x, y):
-            col = int(x+0.5) 
+            col = int(x+0.5)
             if ticks.shape[0] == 1:
                 return ''
             if col >= ticks[0] and col <= ticks[-1]:
@@ -236,7 +262,7 @@ class MainView(View):
         canvas = FigureCanvasTkAgg(fig, self.plot_frame)
         canvas.show()
         canvas.get_tk_widget().grid(row=3, column=0, columnspan=3)
-        
+
         # adding the toolbar to the frame plot
         if self.toolbar_frame is not None:
             self.toolbar_frame.destroy()
