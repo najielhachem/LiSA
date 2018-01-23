@@ -9,6 +9,10 @@ from twitterscraper import query_tweets, Tweet
 import datetime
 import numpy as np
 
+def check_cache(directory):
+    size = sum(os.path.getsize(f) for f in os.listdir(directory) if os.path.isfile(f))
+    print(size)
+
 def get_query_str(subject, since, until, near = None, limit = None):
     """
     Returns the query string that twitter scrapper accepts
@@ -72,7 +76,8 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
     Return:
         None
     """
-
+    
+    check_cache('.cache')
     date_format = '%Y-%m-%d'
     subject = subject.lower()
     limit = int(limit)
@@ -138,7 +143,6 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
             until_date1 = since_date2
             until_date1 += datetime.timedelta(days=-1)
             until_json = until2
-            limit = limit - count
             print('(1) Loaded ' + str(count) + ' tweets from cache')
         if since_date <= until_date2 and since_date > since_date2 :
             between = True
@@ -195,16 +199,20 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
 
     to_save = []
     # fetch tweets and add them to dic
+    limit = limit - len(tweets)
     query_tweets = fetch_tweets(subject, since, until, near, limit)
     query_tweets.reverse()
     print('(1) Downloaded ' + str(len(query_tweets)) + ' new tweets')
     fetched_tweets = []
+    i = 0
     for tweet in query_tweets:
-        t = {}
-        t['text'] = tweet.text
-        t['timestamp'] = str(tweet.timestamp)
-        tweets.append(tweet)
-        fetched_tweets.append(t)
+        if i < limit :
+            t = {}
+            t['text'] = tweet.text
+            t['timestamp'] = str(tweet.timestamp)
+            tweets.append(tweet)
+            fetched_tweets.append(t)
+            i += 1
     if not tweets :
         to_save.extend(fetched_tweets)
         to_save.extend(json_tweets)
@@ -243,15 +251,19 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
                 break
         print('(2) Loaded ' + str(i) + ' tweets from cache')
 
+        limit = limit - len(tweets)
         query_tweets = fetch_tweets(subject, since_date_double.strftime(date_format), until_date_double.strftime(date_format), near, limit)
         query_tweets.reverse()
         print('(2) Downloaded ' + str(len(query_tweets)) + ' new tweets')
+        i = 0
         for tweet in query_tweets:
-            t = {}
-            t['text'] = tweet.text
-            t['timestamp'] = str(tweet.timestamp)
-            tweets.append(tweet)
-            to_save.append(t)
+            if i < limit :
+                t = {}
+                t['text'] = tweet.text
+                t['timestamp'] = str(tweet.timestamp)
+                tweets.append(tweet)
+                to_save.append(t)
+                i += 1
 
     to_save.reverse()
     data['tweets'] = to_save
