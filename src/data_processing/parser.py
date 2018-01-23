@@ -54,7 +54,7 @@ def fetch_tweets(subject, since, until, near = None, limit = None):
     """
 
     query = get_query_str(subject, since, until, near, limit)
-    print(query)
+    print('QUERY : ' + query)
     return query_tweets(query, limit)
 
 def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = None):
@@ -146,7 +146,13 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
             elif since_date > until_date2 :
                 until_json = until
             else :
-                since_date_double = since_date
+                since_date_double = since_date1
+                until_date_double = since_date2
+                until_date_double += datetime.timedelta(days=-1)
+                since_date1 = until_date2
+                since_date1 += datetime.timedelta(days=1)
+                since_json = since_date_double.strftime('%Y-%m-%d')
+                until_json = until_date1.strftime('%Y-%m-%d')
 
     if until_date1 < since_date1 :
         do_fetch = False
@@ -175,7 +181,7 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
     # fetch tweets and add them to dic
     query_tweets = fetch_tweets(subject, since, until, near, limit)
     query_tweets.reverse()
-    print('Downloaded ' + str(len(query_tweets)) + ' new tweets')
+    print('(1) Downloaded ' + str(len(query_tweets)) + ' new tweets')
     fetched_tweets = []
     for tweet in query_tweets:
         t = {}
@@ -205,6 +211,28 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
                 else :
                     break
         print('(2) Loaded ' + str(i) + ' tweets from cache')
+    if since_date_double is not None :
+        count = len(tweets)
+        to_add = limit - count
+        count_json = len(json_tweets)
+        if to_add - count_json < 0 :
+            tweets.extend(json_tweets[:to_add])
+            limit = limit - to_add
+            print('(2) Loaded ' + str(to_add) + ' tweets from cache')
+        else :
+            tweets.extend(json_tweets)
+            limit = limit - count_json
+            print('(3) Loaded ' + str(count_json) + ' tweets from cache')
+
+        query_tweets = fetch_tweets(subject, since_date_double.strftime('%Y-%m-%d'), until_date_double.strftime('%Y-%m-%d'), near, limit)
+        query_tweets.reverse()
+        print('(2) Downloaded ' + str(len(query_tweets)) + ' new tweets')
+        for tweet in query_tweets:
+            t = {}
+            t['text'] = tweet.text
+            t['timestamp'] = str(tweet.timestamp)
+            tweets.append(t)
+            to_save.append(t)
 
     to_save.reverse()
     data['tweets'] = to_save
