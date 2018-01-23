@@ -100,7 +100,7 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
         None
     """
     
-    print()
+    print('-------------')
     date_format = '%Y-%m-%d'
     subject = subject.lower()
     limit = int(limit)
