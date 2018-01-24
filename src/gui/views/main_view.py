@@ -85,7 +85,7 @@ class MainView(View):
 
     def rm_analyze_frame(self):
         if self.analyze_frame is not None:
-            self.analyze_frame.pack_forget()
+            self.analyze_frame.grid_forget()
 
     def add_plot_frame(self, frame):
         # Period Label
@@ -186,6 +186,7 @@ class MainView(View):
         self.chk_cache = tk.IntVar()
         self.btn_cache = tk.Checkbutton(btn_frame, text='Use Cache',
                 variable=self.chk_cache)
+        self.btn_cache.toggle()
         self.btn_cache.grid(row=3, column=0, columnspan=2)
 
         # Add choose classifier Button

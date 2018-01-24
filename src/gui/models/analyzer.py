@@ -17,6 +17,7 @@ class Analyzer:
 
     def set_tweets(self, tweets):
         self.tweets = tweets
+ 
     def get_tweets(self):
         return self.tweets
 
@@ -51,6 +52,10 @@ class Analyzer:
             for i, tweet in enumerate(self.tweets):
                 tweet_time = tweet.__getattribute__('timestamp')
                 tweet_time_s = time.mktime(tweet_time.timetuple()) # transform to seconds
+                print(i, tweet_time)
+                print(i, segment * period + start)
+                print(i, tweet_time_s)
+                print(i, (segment + 1) * period + start)
                 if (segment * period + start ) <= tweet_time_s \
                 and tweet_time_s < ((segment + 1) * period + start):
                     # set periods
