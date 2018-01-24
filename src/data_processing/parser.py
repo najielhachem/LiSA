@@ -338,7 +338,7 @@ def save_tweets_2_file(tweets, f):
     text2save =  json.dumps(data)
     f.write(text2save)
 
-def read_tweets(filename):
+def read_tweets(filepath):
     """
     Reads only tweets from file
 
@@ -348,6 +348,7 @@ def read_tweets(filename):
     Return:
         :tweets -- np.array: array containing all tweets in file
     """
-
-    data = json.load(filename)
+    f = open(filepath)
+    data = json.load(f)
+    f.close()
     return np.array(data['tweets'])

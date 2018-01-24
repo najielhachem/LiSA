@@ -4,6 +4,9 @@
 # iCloud
 *.icloud
 
+# Cache
+.cache/*
+
 # jupyter
 __pycache__/
 .ipynb_*

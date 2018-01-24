@@ -63,20 +63,31 @@ class MainViewController(Controller):
             self.fetch_thread = None
             return
  
-        print('Tweets returned  : ' + str(len(tweets)))
-        print()
         self.model.set_tweets(tweets)
+        
         text_message = "Tweets that match your requirements are downloaded and ready to be to be proceseed!\nTotal of {} tweets download".format(len(tweets))
         self.view.add_message(self.view.data_frame, text_message)
+        
         self.view.btn_analyze.config(state='normal')
+        self.view.btn_save.config(state='normal')
         self.fetch_thread = None
 
+    def load(self):
+        #opend a dialog boxe
+        filepath = filedialog.askopenfilename(filetypes=[("Json Files", "*.json")])
+        if filepath:
+            try:
+                tweets = parser.read_tweets(filepath)
+                self.model.set_tweets(tweets)
+                self.view.btn_analyze.config(state='normal')
+                self.view.btn_save.config(state='normal')
+            except Exception as ex:
+                tk.messagebox.showerror("Loading Error", ex)
 
-    def export(self):
-        #check if something is fetched
-        if (self.model.get_tweets() == []):
-            self.fetch()
+
+    def save(self):
         tweets = self.model.get_tweets()
+        
         #opend a dialog boxe
         f = filedialog.asksaveasfile(mode='w', defaultextension=".json")
         if not(f == None):
