@@ -129,22 +129,21 @@ class MainViewController(Controller):
 
         # get data
         evaluations, periods = self.model.segment_labels(period, start, end)
-
-        print(evaluations.shape, periods.shape)
-        print(evaluations)
-        # truncate data_frame
+        
         n = evaluations.shape[0]
-        i0, i1 = -1, -1
-        for i in range(n):
-            if evaluations[i] != -2 and i0 == -1:
-                i0 = i
-            if evaluations[n - i - 1] != -2 and i1 == -1:
-                i1 = n - i
+        i0, i1 = 0, n
+        
+        # truncate data_frame
+        if self.view.chk_trim.get():
+            for i in range(n):
+                if evaluations[i] != -2 and i0 == 0:
+                    i0 = i
+                if evaluations[n - i - 1] != -2 and i1 == n:
+                    i1 = n - i
 
-        print(i0, i1)
+            periods = periods[i0:i1]
+            evaluations = evaluations[i0:i1]
 
-        periods = periods[i0:i1]
-        evaluations = evaluations[i0:i1]
         empty_idx = np.where(evaluations == -2)[0]
         pos_idx = np.where(evaluations > 0)[0]
         neg_idx = np.where((evaluations < 0) & (evaluations != -2))[0]
