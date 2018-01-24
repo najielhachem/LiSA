@@ -227,9 +227,9 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
             i += 1
     if not tweets :
         to_save.extend(fetched_tweets)
-        to_save.extend(json_tweets)
+        to_save.extend(dic_to_tweets(json_tweets))
     else :
-        to_save.extend(json_tweets)
+        to_save.extend(dic_to_tweets(json_tweets))
         to_save.extend(fetched_tweets)
     if between :
         count = len(tweets)
@@ -306,6 +306,16 @@ def tweets_to_dic(tweets):
         t['timestamp'] = str(tweet.timestamp)
         to_save.append(t)
     return to_save
+
+def dic_to_tweets(dics):
+    tweets = []
+    for dic in dics :
+        text = dic['text']
+        timestamp = dic['timestamp']
+        date_time = datetime.datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
+        t = create_tweet(text, date_time)
+        tweets.append(t)
+    return tweets
 
 def save_tweets(filepath, subject, near, since, until, tweets) :
     """
