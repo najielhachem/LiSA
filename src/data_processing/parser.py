@@ -227,9 +227,9 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
             i += 1
     if not tweets :
         to_save.extend(fetched_tweets)
-        to_save.extend(dic_to_tweets(json_tweets))
+        to_save.extend(dict_to_tweets(json_tweets))
     else :
-        to_save.extend(dic_to_tweets(json_tweets))
+        to_save.extend(dict_to_tweets(json_tweets))
         to_save.extend(fetched_tweets)
     if between :
         count = len(tweets)
@@ -298,7 +298,7 @@ def read_json_folder(folder):
             data +=  json.loads(Doc)
     return data
 
-def tweets_to_dic(tweets):
+def tweets_to_dict(tweets):
     to_save = []
     for tweet in tweets:
         t = {}
@@ -307,7 +307,7 @@ def tweets_to_dic(tweets):
         to_save.append(t)
     return to_save
 
-def dic_to_tweets(dics):
+def dict_to_tweets(dics):
     tweets = []
     for dic in dics :
         text = dic['text']
@@ -339,10 +339,13 @@ def save_tweets(filepath, subject, near, since, until, tweets) :
     # add JSON query to main JSON
     data = {}
     data['query'] = query
-    data['tweets'] = tweets_to_dic(tweets)
+    data['tweets'] = tweets_to_dict(tweets)
     
     # save tweets into file as json
-    file = open(filepath, 'w')
+    if type(filepath) is str: 
+        file = open(filepath, 'w')
+    else:
+        file = filepath
     file.write(json.dumps(data))
     file.close()
 
@@ -359,11 +362,4 @@ def read_tweets(filepath):
     f = open(filepath)
     data = json.load(f)
     f.close()
-    tweets = []
-    for tweet in data['tweets'] :
-        text = tweet['text']
-        timestamp = tweet['timestamp']
-        date_time = datetime.datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
-        t = create_tweet(text, date_time)
-        tweets.append(t)
-    return np.array(tweets)
+    return data['query'], np.array(dict_to_tweets(data['tweets']))

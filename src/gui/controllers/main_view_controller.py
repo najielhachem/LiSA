@@ -77,11 +77,18 @@ class MainViewController(Controller):
         filepath = filedialog.askopenfilename(filetypes=[("Json Files", "*.json")])
         if filepath:
             try:
-                tweets = parser.read_tweets(filepath)
+                query, tweets = parser.read_tweets(filepath)
                 self.model.set_tweets(tweets)
+                self.view.subject.delete(0, 'end')
+                self.view.subject.insert('end', query['subject'])
+                self.view.location.delete(0, 'end')
+                self.view.location.insert('end', query['near'])
+                self.view.limit.delete(0, 'end')
+                self.view.limit.insert('end', str(tweets.shape[0]))
+                self.view.date_start.set(query['since'])
+                self.view.date_end.set(query['until'])
                 self.view.btn_analyze.config(state='normal')
                 self.view.btn_save.config(state='normal')
-                print("3")
             except Exception as ex:
                 tk.messagebox.showerror("Loading Error", ex)
 
@@ -91,13 +98,12 @@ class MainViewController(Controller):
         
         #opend a dialog boxe
         f = filedialog.asksaveasfile(mode='w', defaultextension=".json")
-        if not(f == None):
+        if f:
             subject = self.view.subject.get()
-            location = self.view.location.get()
+            near = self.view.location.get()
             since = self.view.date_start.get()
             until = self.view.date_end.get()
-            parser.save_tweets(f, subject, location, since, until, tweets)
-            f.close()
+            parser.save_tweets(f, subject, near, since, until, tweets)
 
     def fetch(self):
         self.fetch_thread = threading.Thread(target=self.fetchThread)
