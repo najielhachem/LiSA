@@ -47,11 +47,22 @@ class MainViewController(Controller):
         since = self.view.date_start.get()
         until = self.view.date_end.get()
 
-        tweets = parser.fetch_and_save_tweets(filename=subject + '.json', subject=subject, since=since, until=until, near=(None if location == "" else location), limit=limit)
+        if not self.view.chk_cache.get():
+            print("no caching")
+            tweets = parser.fetch_tweets(subject=subject, since=since,
+                        until=until, near=(None if location == "" else location),
+                        limit=limit)
+        else :
+            print("caching")
+            tweets = parser.fetch_and_save_tweets(filename=subject + '.json',
+                    subject=subject, since=since, until=until,
+                    near=(None if location == "" else location), limit=limit)
+        
         if (self.stopped):
             self.stopped = False
             self.fetch_thread = None
             return
+ 
         print('Tweets returned  : ' + str(len(tweets)))
         print()
         self.model.set_tweets(tweets)
