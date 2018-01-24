@@ -85,7 +85,7 @@ class MainView(View):
 
     def rm_analyze_frame(self):
         if self.analyze_frame is not None:
-            self.analyze_frame.pack_forget()
+            self.analyze_frame.grid_forget()
 
     def add_plot_frame(self, frame):
         # Period Label

@@ -125,10 +125,13 @@ class MainViewController(Controller):
         start = time.mktime(datetime.datetime.strptime(start, "%Y-%m-%d").timetuple())
         end = self.view.date_end.get()
         end = time.mktime(datetime.datetime.strptime(end, "%Y-%m-%d").timetuple())
+        end += 3600 * 24 
 
         # get data
         evaluations, periods = self.model.segment_labels(period, start, end)
 
+        print(evaluations.shape, periods.shape)
+        print(evaluations)
         # truncate data_frame
         n = evaluations.shape[0]
         i0, i1 = -1, -1
@@ -137,6 +140,8 @@ class MainViewController(Controller):
                 i0 = i
             if evaluations[n - i - 1] != -2 and i1 == -1:
                 i1 = n - i
+
+        print(i0, i1)
 
         periods = periods[i0:i1]
         evaluations = evaluations[i0:i1]
