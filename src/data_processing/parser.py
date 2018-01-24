@@ -86,34 +86,6 @@ def fetch_tweets(subject, since, until, near = None, limit = None):
     print('QUERY : ' + query + " limit: " + str(limit))
     return query_tweets(query, limit)
 
-def save_tweets(path_to_save, subject, near, since, until, to_save) :
-    """
-    Params:
-        :subject  -- str: subject of tweet ("Trump OR Nagi")
-        :near     -- str: fetch tweets published near that location ("New York")
-        :since    -- str: fetch tweets since that date ("2017-11-30")
-        :until    -- str: fetch tweets until that date ("2017-12-04")
-        :to_save  -- list<dict(text, timestamp)>: tweets (with timestamp) to save
-
-    Return:
-        None
-    """
-    # save query into JSON
-    query = {}
-    query['subject'] = subject
-    query['near'] = near
-    query['since'] = since
-    query['until'] = until
-    # add JSON query to main JSON
-    data = {}
-    data['query'] = query
-    data['tweets'] = to_save
-    
-    # save tweets into file as json
-    file = open(path_to_save, 'w')
-    file.write(json.dumps(data))
-    file.close()
-
 def create_tweet(text, date_time) :
     return Tweet(timestamp=date_time, text=text, user='', fullname='', id='', url='', replies='', retweets='', likes='')
 
@@ -276,6 +248,7 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
                 else :
                     break
         print('(2) Loaded ' + str(i) + ' tweets from cache')
+ 
     if since_date_double is not None :
         count = len(tweets)
         to_add = limit - count
@@ -325,18 +298,43 @@ def read_json_folder(folder):
             data +=  json.loads(Doc)
     return data
 
-def save_tweets_2_file(tweets, f):
-    """
-    writing tweets in a file f given
+def tweets_to_dic(tweets):
+    to_save = []
+    for tweet in tweets:
+        t = {}
+        t['text'] = tweet.text
+        t['timestamp'] = str(tweet.timestamp)
+        to_save.append(t)
+    return to_save
 
-    Params:
-        :tweets -- list(tweet) : list of the tweets
-        :f -- file :  file where to write tweets
+def save_tweets(filepath, subject, near, since, until, tweets) :
     """
+    Params:
+        :subject  -- str: subject of tweet ("Trump OR Nagi")
+        :near     -- str: fetch tweets published near that location ("New York")
+        :since    -- str: fetch tweets since that date ("2017-11-30")
+        :until    -- str: fetch tweets until that date ("2017-12-04")
+        :tweets   -- list<Tweet>: tweets to save
+
+    Return:
+        None
+    """
+    # save query into JSON
+    query = {}
+    query['subject'] = subject
+    query['near'] = near
+    query['since'] = since
+    query['until'] = until
+    
+    # add JSON query to main JSON
     data = {}
-    data['tweets'] =  [tweet.text for tweet in tweets]
-    text2save =  json.dumps(data)
-    f.write(text2save)
+    data['query'] = query
+    data['tweets'] = tweets_to_dic(tweets)
+    
+    # save tweets into file as json
+    file = open(filepath, 'w')
+    file.write(json.dumps(data))
+    file.close()
 
 def read_tweets(filepath):
     """

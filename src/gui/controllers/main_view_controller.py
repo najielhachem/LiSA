@@ -81,6 +81,7 @@ class MainViewController(Controller):
                 self.model.set_tweets(tweets)
                 self.view.btn_analyze.config(state='normal')
                 self.view.btn_save.config(state='normal')
+                print("3")
             except Exception as ex:
                 tk.messagebox.showerror("Loading Error", ex)
 
@@ -91,7 +92,11 @@ class MainViewController(Controller):
         #opend a dialog boxe
         f = filedialog.asksaveasfile(mode='w', defaultextension=".json")
         if not(f == None):
-            parser.save_tweets_2_file(tweets, f)
+            subject = self.view.subject.get()
+            location = self.view.location.get()
+            since = self.view.date_start.get()
+            until = self.view.date_end.get()
+            parser.save_tweets(f, subject, location, since, until, tweets)
             f.close()
 
     def fetch(self):
