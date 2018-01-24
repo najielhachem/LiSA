@@ -62,7 +62,7 @@ def get_query_str(subject, since, until, near = None, limit = None):
     query = ""
     query += subject
     if near is not None:
-        query += " near:" + near
+        query += " near:" + near.replace(' ', '')
     query += " since:" + since
     query += " until:" + until
     return query
