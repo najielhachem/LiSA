@@ -181,13 +181,15 @@ class MainView(View):
         self.btn_fetch.grid(row=0, column=1, sticky='w', pady=(10,0))
 
         # Add Load Tweets Button
-        self.btn_load = tk.Button(btn_frame, text="Load Tweets")
+        self.btn_load = tk.Button(btn_frame, text="Load Tweets",
+                command=self.controller.load)
         self.btn_load.grid(row=1, column=0, sticky='e')
 
         # Add export Tweets Button
-        self.btn_export = tk.Button(btn_frame, text="Save Tweets",
-                command=self.controller.export)
-        self.btn_export.grid(row=1, column = 1, sticky='w')
+        self.btn_save = tk.Button(btn_frame, text="Save Tweets",
+                command=self.controller.save)
+        self.btn_save.grid(row=1, column = 1, sticky='w')
+        self.btn_save.config(state='disabled')
 
         # Add Save Tweets Check Box
         self.chk_cache = tk.IntVar()
