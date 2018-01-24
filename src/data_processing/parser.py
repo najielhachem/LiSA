@@ -86,9 +86,37 @@ def fetch_tweets(subject, since, until, near = None, limit = None):
     print('QUERY : ' + query + " limit: " + str(limit))
     return query_tweets(query, limit)
 
+def save_tweets(subject, near, since, until, to_save) :
+    """
+    Params:
+        :subject  -- str: subject of tweet ("Trump OR Nagi")
+        :near     -- str: fetch tweets published near that location ("New York")
+        :since    -- str: fetch tweets since that date ("2017-11-30")
+        :until    -- str: fetch tweets until that date ("2017-12-04")
+        :to_save  -- list<dict(text, timestamp)>: tweets (with timestamp) to save
 
+    Return:
+        None
+    """
+    # save query into JSON
+    query = {}
+    query['subject'] = subject
+    query['near'] = near
+    query['since'] = since
+    query['until'] = until
+    # add JSON query to main JSON
+    data = {}
+    data['query'] = query
+    data['tweets'] = to_save
+    
+    # save tweets into file as json
+    filename = '.cache/' + subject + '_' + near + '.json'
+    file = open(filename, 'w')
+    file.write(json.dumps(data))
+    file.close()
 
-
+def create_tweet(text, date_time) :
+    return Tweet(timestamp=date_time, text=text, user='', fullname='', id='', url='', replies='', retweets='', likes='')
 
 def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = None):
     """
@@ -134,8 +162,6 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
     since_json = since
     until_json = until
 
-    # main JSON to save in cache
-    data = {}
     tweets = []
     do_fetch = True
     between = False
@@ -164,7 +190,7 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
                     break
                 if date_time < until_date :
                     if count < limit :
-                        t = Tweet(timestamp=date_time, text=tweet['text'], user='', fullname='', id='', url='', replies='', retweets='', likes='')
+                        t = create_tweet(tweet['text'], date_time)
                         tweets.append(t)
                         count += 1
                     else :
@@ -185,7 +211,7 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
                     timestamp = tweet['timestamp']
                     date_time = datetime.datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
                     if count < limit :
-                        t = Tweet(timestamp=date_time, text=tweet['text'], user='', fullname='', id='', url='', replies='', retweets='', likes='')
+                        t = create_tweet(tweet['text'], date_time)
                         tweets.append(t)
                         count += 1
                     else :
@@ -211,15 +237,6 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
 
     since = since_date1.strftime(date_format)
     until = until_date1.strftime(date_format)
-
-    # save query into JSON
-    query = {}
-    query['subject'] = subject
-    query['near'] = near
-    query['since'] = since_json
-    query['until'] = until_json
-    # add JSON query to main JSON
-    data['query'] = query
 
     to_save = []
     # fetch tweets and add them to dic
@@ -253,7 +270,7 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
                 break
             if date_time < until_date :
                 if count < limit :
-                    t = Tweet(timestamp=date_time, text=tweet['text'], user='', fullname='', id='', url='', replies='', retweets='', likes='')
+                    t = create_tweet(tweet['text'], date_time)
                     tweets.append(t)
                     count += 1
                     i += 1
@@ -268,7 +285,7 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
             if i < to_add :
                 timestamp = tweet['timestamp']
                 date_time = datetime.datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
-                t = Tweet(timestamp=date_time, text=tweet['text'], user='', fullname='', id='', url='', replies='', retweets='', likes='')
+                t = create_tweet(tweet['text'], date_time)
                 tweets.append(t)
                 i += 1
             else :
@@ -290,12 +307,7 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
                 i += 1
 
     to_save.reverse()
-    data['tweets'] = to_save
-
-    # save tweets into file as json
-    file = open(filename, 'w')
-    file.write(json.dumps(data))
-    file.close()
+    save_tweets(subject, near, since_json, until_json, to_save)
 
     return tweets
 
