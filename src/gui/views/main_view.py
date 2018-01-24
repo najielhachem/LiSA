@@ -182,16 +182,22 @@ class MainView(View):
                 command=self.controller.export)
         self.btn_export.grid(row=1, column = 1, sticky='w')
 
+        # Add Save Tweets Check Box
+        self.chk_cache = tk.IntVar()
+        self.btn_cache = tk.Checkbutton(btn_frame, text='Use Cache',
+                variable=self.chk_cache)
+        self.btn_cache.grid(row=3, column=0, columnspan=2)
+
         # Add choose classifier Button
         self.btn_choose_clf = tk.Button(btn_frame, text="Advanced",
                 command= self.popup_list_clf)
-        self.btn_choose_clf.grid(row=3, column = 0, columnspan=2,
+        self.btn_choose_clf.grid(row=4, column = 0, columnspan=2,
                 pady=(15,0))
 
         # Add Analyze Tweets Button
         self.btn_analyze = tk.Button(btn_frame, text="Analyze Tweets",
                 command=self.controller.analyze)
-        self.btn_analyze.grid(row=4, column=0, columnspan=2)
+        self.btn_analyze.grid(row=5, column=0, columnspan=2)
         self.btn_analyze.config(state='disabled')
 
     def add_message(self, frame, msg):
@@ -282,8 +288,6 @@ class MainView(View):
                 return 'From: {}\nTo   : {}'.format(T1, T2)
             return 'No tweets'
         ax.format_coord = __format_coord
-
-
 
 
 class NavigationToolbar(NavigationToolbar2TkAgg):

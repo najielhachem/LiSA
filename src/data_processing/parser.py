@@ -83,7 +83,7 @@ def fetch_tweets(subject, since, until, near = None, limit = None):
     """
 
     query = get_query_str(subject, since, until, near, limit)
-    print('QUERY : ' + query)
+    print('QUERY : ' + query + " limit: " + str(limit))
     return query_tweets(query, limit)
 
 
