@@ -106,6 +106,13 @@ class MainView(View):
                 "seconds", "minutes", "hours", "days", "months")
         opt_metric.grid(row=1, column=2)
 
+        # Add Trim Check Box
+        self.chk_trim = tk.IntVar()
+        self.btn_trim = tk.Checkbutton(self.plot_frame, text='Trim Data',
+                variable=self.chk_trim)
+        self.btn_trim.toggle()
+        self.btn_trim.grid(row=2, column=0, columnspan=2, stick='e')
+
         # Plot Button
         btn_plot = tk.Button(self.plot_frame, text='Plot',
                 command=self.controller.plot)
