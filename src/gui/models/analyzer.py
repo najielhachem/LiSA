@@ -17,6 +17,7 @@ class Analyzer:
 
     def set_tweets(self, tweets):
         self.tweets = tweets
+ 
     def get_tweets(self):
         return self.tweets
 
