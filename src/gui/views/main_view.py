@@ -202,7 +202,9 @@ class MainView(View):
             self.message_box.config(text=msg)
 
     def remove_message(self):
-        self.message_box.destroy()
+        if self.message_box != None:
+            self.message_box.destroy()
+            self.message_box = None
 
     def popup_list_clf(self):
         win = tk.Toplevel()

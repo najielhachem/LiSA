@@ -11,7 +11,9 @@ import tkinter.simpledialog as simpledialog
 import data_processing.preprocessor as preprocessor
 import time, datetime
 
-from ..models.fetchThread import FuncThread
+import threading
+
+from ..models.fetchThread import FuncThread, ctype_async_raise
 
 class CalendarDialog(simpledialog.Dialog):
     """
@@ -45,12 +47,18 @@ class MainViewController(Controller):
         until = self.view.date_end.get()
 
         tweets = parser.fetch_and_save_tweets(filename=subject + '.json', subject=subject, since=since, until=until, near=(None if location == "" else location), limit=limit)
+        if (self.stopped):
+            self.stopped = False
+            self.fetch_thread = None
+            return
         print('Tweets returned  : ' + str(len(tweets)))
         print()
         self.model.set_tweets(tweets)
         text_message = "Tweets that match your requirements are downloaded and ready to be to be proceseed!\nTotal of {} tweets download".format(len(tweets))
         self.view.add_message(self.view.data_frame, text_message)
         self.view.btn_analyze.config(state='normal')
+        self.fetch_thread = None
+
 
     def export(self):
         #check if something is fetched
@@ -64,12 +72,14 @@ class MainViewController(Controller):
             f.close()
 
     def fetch(self):
-        self.fetch_thread = FuncThread(self.fetchThread)
+        self.fetch_thread = threading.Thread(target=self.fetchThread)
         self.fetch_thread.start()
 
     def cancel(self):
-        self.fetch_thread = None
-        self.view.remove_message();
+        if (self.fetch_thread != None):
+            self.stopped = True
+            ctype_async_raise(self.fetch_thread, SystemExit)
+            self.view.remove_message()
 
     def analyze(self):
         self.view.add_message(self.view.data_frame, "Analyzing tweets")
