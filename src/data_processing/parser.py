@@ -219,11 +219,8 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
     i = 0
     for tweet in query_tweets:
         if i < limit :
-            t = {}
-            t['text'] = tweet.text
-            t['timestamp'] = str(tweet.timestamp)
             tweets.append(tweet)
-            fetched_tweets.append(t)
+            fetched_tweets.append(tweet)
             i += 1
     if not tweets :
         to_save.extend(fetched_tweets)
@@ -271,11 +268,8 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
         i = 0
         for tweet in query_tweets:
             if i < limit :
-                t = {}
-                t['text'] = tweet.text
-                t['timestamp'] = str(tweet.timestamp)
                 tweets.append(tweet)
-                to_save.append(t)
+                to_save.append(tweet)
                 i += 1
 
     to_save.reverse()
