@@ -86,7 +86,7 @@ def fetch_tweets(subject, since, until, near = None, limit = None):
     print('QUERY : ' + query + " limit: " + str(limit))
     return query_tweets(query, limit)
 
-def save_tweets(subject, near, since, until, to_save) :
+def save_tweets(path_to_save, subject, near, since, until, to_save) :
     """
     Params:
         :subject  -- str: subject of tweet ("Trump OR Nagi")
@@ -110,8 +110,7 @@ def save_tweets(subject, near, since, until, to_save) :
     data['tweets'] = to_save
     
     # save tweets into file as json
-    filename = '.cache/' + subject + '_' + near + '.json'
-    file = open(filename, 'w')
+    file = open(path_to_save, 'w')
     file.write(json.dumps(data))
     file.close()
 
@@ -307,7 +306,8 @@ def fetch_and_save_tweets(filename, subject, since, until, near = None, limit = 
                 i += 1
 
     to_save.reverse()
-    save_tweets(subject, near, since_json, until_json, to_save)
+    filename = '.cache/' + subject + '_' + near + '.json'
+    save_tweets(filename, subject, near, since_json, until_json, to_save)
 
     return tweets
 
@@ -351,4 +351,11 @@ def read_tweets(filepath):
     f = open(filepath)
     data = json.load(f)
     f.close()
-    return np.array(data['tweets'])
+    tweets = []
+    for tweet in data['tweets'] :
+        text = tweet['text']
+        timestamp = tweet['timestamp']
+        date_time = datetime.datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
+        t = create_tweet(text, date_time)
+        tweets.append(t)
+    return np.array(tweets)
