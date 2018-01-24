@@ -31,6 +31,7 @@ class MainViewController(Controller):
     def __init__(self, view):
         self.view = view
         self.init_model()
+        self.stopped = False
 
     def init_model(self, clfname = "SVM"):
         clf = classifier.get_classifiers()[clfname]
