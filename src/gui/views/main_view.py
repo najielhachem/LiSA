@@ -233,6 +233,7 @@ class MainView(View):
             listbox.insert(tk.END, key)
         b = tk.Button(win, text="validate", command = lambda: [f() for f in [lambda:self.controller.init_model(listbox.get(tk.ACTIVE)),win.destroy]])
         b.pack()
+        self.btn_analyze.config(state='normal')
 
     def plot_data(self, pos_idx, neg_idx, empty_idx,
             evaluations, ticks, periods):

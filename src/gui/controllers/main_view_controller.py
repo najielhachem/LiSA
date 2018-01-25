@@ -50,13 +50,13 @@ class MainViewController(Controller):
         if not self.view.chk_cache.get():
             print("no caching")
             tweets = parser.fetch_tweets(subject=subject, since=since,
-                        until=until, near=(None if location == "" else location),
+                        until=until, near=location,
                         limit=limit)
         else :
             print("caching")
             tweets = parser.fetch_and_save_tweets(filename=subject + '.json',
                     subject=subject, since=since, until=until,
-                    near=(None if location == "" else location), limit=limit)
+                    near=location, limit=limit)
         
         if (self.stopped):
             self.stopped = False
