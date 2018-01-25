@@ -65,7 +65,10 @@ class MainViewController(Controller):
  
         self.model.set_tweets(tweets)
         
-        text_message = "Tweets that match your requirements are downloaded and ready to be to be proceseed!\nTotal of {} tweets download".format(len(tweets))
+        text_message = "Tweets that match your requirements are downloaded " + \
+                "and ready to be to be proceseed!\n" + \
+                "-------------------------------\n" + \
+                "number of tweets: {}\n".format(len(tweets)) 
         self.view.add_message(self.view.data_frame, text_message)
         
         self.view.btn_analyze.config(state='normal')
@@ -89,6 +92,7 @@ class MainViewController(Controller):
                 self.view.date_end.set(query['until'])
                 self.view.btn_analyze.config(state='normal')
                 self.view.btn_save.config(state='normal')
+                self.view.rm_plot_frame()
             except Exception as ex:
                 tk.messagebox.showerror("Loading Error", ex)
 

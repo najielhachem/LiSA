@@ -87,6 +87,11 @@ class MainView(View):
         if self.analyze_frame is not None:
             self.analyze_frame.grid_forget()
 
+    def rm_plot_frame(self):
+        if self.plot_frame is not None:
+            self.plot_frame.grid_forget()
+
+    
     def add_plot_frame(self, frame):
         # Period Label
         self.plot_frame = tk.Frame(frame, bd=10, relief='raised')
