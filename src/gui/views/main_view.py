@@ -25,6 +25,7 @@ class MainView(View):
         self.add_data_frame()
         # Setting Reusable Variables to None
         self.analyze_frame = None
+        self.plot_frame = None
         self.toolbar_frame = None
         self.message_box = None
 
