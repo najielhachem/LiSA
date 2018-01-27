@@ -145,13 +145,17 @@ class MainViewController(Controller):
             period *= 3600 * 24
         if metric == 'months':
             period *= 3600 * 24 * 30
+        self.period = period
 
         # divide Tweets based on timestamp and period
         start = self.view.date_start.get()
         start = time.mktime(datetime.datetime.strptime(start, "%Y-%m-%d").timetuple())
+        self.start = start
+
         end = self.view.date_end.get()
         end = time.mktime(datetime.datetime.strptime(end, "%Y-%m-%d").timetuple())
         end += 3600 * 24 
+        self.end = end
 
         # get data
         evaluations, periods = self.model.segment_labels(period, start, end)
@@ -177,6 +181,10 @@ class MainViewController(Controller):
 
         # plot data
         self.view.plot_data(pos_idx, neg_idx, empty_idx, evaluations, ticks, periods)
+
+    def get_tweets(self, segment):
+        return self.model.get_segment_tweets(segment, self.period,
+                self.start, self.end)
 
     def calendar_click(self, var):
         cd = CalendarDialog(self.view)

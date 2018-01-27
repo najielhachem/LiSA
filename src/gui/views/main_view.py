@@ -306,6 +306,21 @@ class MainView(View):
             return 'No tweets'
         ax.format_coord = __format_coord
 
+        def onclick(event):
+            col = int(event.xdata + 0.5)
+            if col >= ticks[0] and col <= ticks[-1]:
+                tweets = self.controller.get_tweets(col) 
+                message = ""
+                for i, tweet in enumerate(tweets):
+                    message += str(i) + " -- " +  tweet.text + "\n"
+                toplevel = tk.Toplevel()
+                textbox = tk.Text(toplevel, relief='raised', bd=5) 
+                textbox.pack(expand=1, fill='both')
+                textbox.insert('end', '\t\tTweets\n\n')
+                textbox.insert('end', message)
+                textbox.config(state='disabled')
+
+        canvas.mpl_connect('button_press_event', onclick)
 
 class NavigationToolbar(NavigationToolbar2TkAgg):
     # only display the buttons we need

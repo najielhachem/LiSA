@@ -35,6 +35,20 @@ class Analyzer:
             self.classifier.load()
             self.labels = self.classifier.predict(tweets_text)
 
+    def get_segment_tweets(self, segment, period, start, end):
+        segment_tweets = []
+
+        for i, tweet in enumerate(self.tweets):
+            tweet_time = tweet.__getattribute__('timestamp')
+            tweet_time_s = time.mktime(tweet_time.timetuple()) # transform to seconds
+            
+            if (segment * period + start ) <= tweet_time_s \
+            and tweet_time_s < ((segment + 1) * period + start):
+                segment_tweets.append(tweet)
+
+        return np.array(segment_tweets)
+
+
     def segment_labels(self, period, start, end):
         """
             Return list of tweets segmented by the attribute timestamp 
